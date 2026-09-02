@@ -1,0 +1,26 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Retro 4-quadrant geometric emblem with 3D bevels -->
+  <rect x="1" y="1" width="6" height="6" fill="#D32F2F"/>
+  <rect x="1" y="1" width="6" height="1" fill="#FF8A80"/>
+  <rect x="1" y="1" width="1" height="6" fill="#FF8A80"/>
+  <rect x="1" y="6" width="6" height="1" fill="#8E0000"/>
+  <rect x="6" y="1" width="1" height="6" fill="#8E0000"/>
+
+  <rect x="9" y="1" width="6" height="6" fill="#388E3C"/>
+  <rect x="9" y="1" width="6" height="1" fill="#B9F6CA"/>
+  <rect x="9" y="1" width="1" height="6" fill="#B9F6CA"/>
+  <rect x="9" y="6" width="6" height="1" fill="#1B5E20"/>
+  <rect x="14" y="1" width="1" height="6" fill="#1B5E20"/>
+
+  <rect x="1" y="9" width="6" height="6" fill="#1976D2"/>
+  <rect x="1" y="9" width="6" height="1" fill="#82B1FF"/>
+  <rect x="1" y="9" width="1" height="6" fill="#82B1FF"/>
+  <rect x="1" y="14" width="6" height="1" fill="#0D47A1"/>
+  <rect x="6" y="9" width="1" height="6" fill="#0D47A1"/>
+
+  <rect x="9" y="9" width="6" height="6" fill="#FBC02D"/>
+  <rect x="9" y="9" width="6" height="1" fill="#FFFF8D"/>
+  <rect x="9" y="9" width="1" height="6" fill="#FFFF8D"/>
+  <rect x="9" y="14" width="6" height="1" fill="#F57F17"/>
+  <rect x="14" y="9" width="1" height="6" fill="#F57F17"/>
+</svg>

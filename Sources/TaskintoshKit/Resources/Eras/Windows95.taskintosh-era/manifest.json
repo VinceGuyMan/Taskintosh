@@ -1,0 +1,9 @@
+{
+  "id": "org.taskintosh.era.windows95",
+  "name": "Windows 95 Classic",
+  "version": "1.0.0",
+  "author": "Taskintosh Project",
+  "eraPeriod": "1995-1998",
+  "description": "Original clean-room recreation of the iconic 1995 desktop taskbar, featuring 3D bevels, sunken task buttons, system tray clock, and hierarchical Start menu.",
+  "minEngineVersion": "1.0.0"
+}

@@ -1,0 +1,18 @@
+{
+  "backgroundColorHex": "#C0C0C0",
+  "surfaceColorHex": "#C0C0C0",
+  "lightHighlightColorHex": "#FFFFFF",
+  "shadowColorHex": "#808080",
+  "darkShadowColorHex": "#000000",
+  "textColorHex": "#000000",
+  "activeTextColorHex": "#000000",
+  "bannerStartColorHex": "#000080",
+  "bannerEndColorHex": "#1084D0",
+  "accentColorHex": "#000080",
+  "bevelStyle": "classic3D",
+  "ditherActiveButton": true,
+  "fontSize": 11,
+  "fontName": null,
+  "startButtonText": "Start",
+  "bannerText": "Taskintosh 95"
+}

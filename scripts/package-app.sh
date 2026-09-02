@@ -1,0 +1,56 @@
+#!/bin/bash
+set -e
+
+echo "==> Building Taskintosh (Release)..."
+swift build -c release
+
+APP_DIR="build/Taskintosh.app"
+MACOS_DIR="$APP_DIR/Contents/MacOS"
+RESOURCES_DIR="$APP_DIR/Contents/Resources"
+
+echo "==> Creating macOS App Bundle at $APP_DIR..."
+rm -rf "$APP_DIR"
+mkdir -p "$MACOS_DIR"
+mkdir -p "$RESOURCES_DIR/Eras"
+
+# Copy binary
+cp .build/release/Taskintosh "$MACOS_DIR/Taskintosh"
+
+# Copy Era packages
+cp -R Sources/TaskintoshKit/Resources/Eras/* "$RESOURCES_DIR/Eras/"
+
+# Create Info.plist
+cat << 'PLIST' > "$APP_DIR/Contents/Info.plist"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>CFBundleExecutable</key>
+    <string>Taskintosh</string>
+    <key>CFBundleIdentifier</key>
+    <string>org.taskintosh.Taskintosh</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>Taskintosh</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>13.0</string>
+    <key>LSUIElement</key>
+    <true/>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSPrincipalClass</key>
+    <string>NSApplication</string>
+</dict>
+</plist>
+PLIST
+
+echo "==> Packaging complete: $APP_DIR"
