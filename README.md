@@ -43,6 +43,17 @@ Taskintosh ships with six original, legally clean reference Eras: **Windows 95 C
 - **System Tray**: Sunken bezel clock updating every second, volume indicator, and Era Switcher shortcut.
 - **Functional Retro Dialogs**: Genuine **Run...** dialog (opens apps, URLs, paths, terminal commands) and **Shut Down...** dialog (handles macOS sleep, restart, and shutdown).
 
+## Visual Gallery
+
+<p align="center">
+  <img src="Assets/GitHub/screenshots/menu_windowsxp.png" width="47%" alt="Windows XP Luna Start menu">
+  <img src="Assets/GitHub/screenshots/menu_windows8.png" width="47%" alt="Windows 8 Start screen">
+</p>
+<p align="center">
+  <img src="Assets/GitHub/screenshots/menu_windows81.png" width="47%" alt="Windows 8.1 Start screen">
+  <img src="Assets/GitHub/screenshots/menu_windows11.png" width="47%" alt="Windows 11 centered Start menu">
+</p>
+
 ---
 
 ## Quick Start
