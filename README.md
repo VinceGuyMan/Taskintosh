@@ -1,5 +1,9 @@
 # TASKINTOSH
 
+<p align="center">
+  <img src="Assets/GitHub/readme-hero-light.png" width="836" alt="Taskintosh — Desktop history, openly rebuilt for Mac.">
+</p>
+
 > *“Desktop history, openly rebuilt for Mac.”*
 
 **Taskintosh** is a native macOS taskbar recreation and desktop-history platform. It enables Mac users to replace or supplement the traditional macOS Dock with faithful recreations of taskbars, Start menus, system trays, behaviors, animations, and interaction patterns from desktop computing history.
