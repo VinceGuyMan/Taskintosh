@@ -1,4 +1,4 @@
-# TASKINTOSH
+# Taskintosh — Historical Desktop Experiences for macOS
 
 <p align="center">
   <a href="https://raw.githubusercontent.com/VinceGuyMan/Taskintosh/main/Assets/GitHub/TaskinToshIntro.mp4">
@@ -8,7 +8,9 @@
 
 > *“Desktop history, openly rebuilt for Mac.”*
 
-**Taskintosh** is a native macOS taskbar recreation and desktop-history platform. It enables Mac users to replace or supplement the traditional macOS Dock with faithful recreations of taskbars, Start menus, system trays, behaviors, animations, and interaction patterns from desktop computing history.
+**Taskintosh** is a native macOS retro desktop and taskbar recreation platform. It lets Mac users replace or supplement the traditional Dock with faithful, clean-room recreations of Windows-era taskbars, Start menus, system trays, window behaviors, animations, and interaction patterns from desktop-computing history.
+
+Built with Swift, SwiftUI, AppKit, and Core Graphics, Taskintosh currently includes distinct Windows 95, Windows XP, Windows 7, Windows 8, Windows 10, and Windows 11 experiences. Each era is packaged independently so the project can be explored as both a practical Mac utility and an open-source study of desktop interface history.
 
 ---
 
