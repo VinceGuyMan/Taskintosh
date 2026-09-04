@@ -42,7 +42,7 @@ Taskintosh ships with six original, legally clean reference Eras: **Windows 95 C
 
 ### Procedural Windows Update
 
-For a smaller, delightfully fake side project, Taskintosh also includes [`ProceduralWindowsUpdate`](ProceduralWindowsUpdate/): a deterministic, theatrical Windows Update simulator that never touches the real system. Its centerpiece is an era-authentic Windows 95/98/ME setup dialog, complete with compact Win32 geometry, classic navy title bars, chunky recessed progress bars, generated KB details, stalls, pacing, and optional Taskintosh easter eggs. The isolated Swift package includes a clean interactive preview and test suite, so it can be explored independently of the main taskbar app.
+For a smaller, delightfully fake side project, Taskintosh also includes [`ProceduralWindowsUpdate`](ProceduralWindowsUpdate/): a deterministic, theatrical Windows Update simulator that never touches the real system. Its centerpiece is an era-authentic Windows 95/98/ME update dialog, complete with compact Win32 geometry, classic navy title bars, chunky recessed progress bars, generated KB details, stalls, pacing, and optional Taskintosh easter eggs. The self-contained Swift package includes a clean interactive preview and test suite, so it can be explored independently of the main taskbar app.
 
 <p align="center">
   <a href="ProceduralWindowsUpdate/README.md">Explore the Procedural Windows Update side project →</a>

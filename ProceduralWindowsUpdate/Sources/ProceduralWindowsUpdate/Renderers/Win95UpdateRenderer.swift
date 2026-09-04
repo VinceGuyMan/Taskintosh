@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Title bar icon mode for the classic dialog renderer.
 public enum ClassicTitleBarIcon: String, CaseIterable, Equatable, Sendable {
-    /// Canonical Win32 setup dialog standard: no icon in title bar, flush left title text.
+/// Canonical Win32 update dialog standard: no icon in title bar, flush left title text.
     case none
     /// Period-appropriate setup diskette and computer icon.
     case setupMonitor
@@ -110,7 +110,7 @@ private struct ClassicCloseButtonStyle: ButtonStyle {
     }
 }
 
-/// Faithful Windows 95 / 98 / ME era update and setup dialog renderer.
+/// Faithful Windows 95 / 98 / ME era update dialog renderer.
 /// Matches the exact dimensions, colors, bevels, typography, and layout of authentic Win32 dialogs.
 public struct Win95UpdateRenderer: View {
     @ObservedObject public var controller: FakeUpdateController

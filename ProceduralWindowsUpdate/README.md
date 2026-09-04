@@ -11,12 +11,12 @@ Taskintosh brings nostalgic desktop eras to the Mac. **ProceduralWindowsUpdate**
 It is **100% theatrical procedural theater**:
 - **Zero Real System Changes**: All file operations, KB identifiers, sizes, stages, logs, and simulated reboots are purely in-memory data structures.
 - **Deterministic & Seedable**: Every session is uniquely generated via an internal PRNG from a `UInt64` seed. Replaying the same seed yields the exact same updates, progress curves, stalls, jumps, and text.
-- **Authentic Period Fidelity**: The Windows 95/98/ME dialog is built to exact classic Win32 standards: compact 350×195 px geometry, solid `#C0C0C0` face, solid `#000080` navy title bar, 16×14 px close button with pixel-accurate `✕`, 2-tier dual-tone bevels, 16 px recessed chunky navy progress bar, authentic setup copy, and a single "Cancel" (or "OK") button.
+- **Authentic Period Fidelity**: The Windows 95/98/ME update dialog is built to exact classic Win32 standards: compact 350×195 px geometry, solid `#C0C0C0` face, solid `#000080` navy title bar, 16×14 px close button with pixel-accurate `✕`, 2-tier dual-tone bevels, 16 px recessed chunky navy progress bar, authentic update copy, and a single "Cancel" (or "OK") button.
 - **Separation of Authenticity & Comedy**: Default mode is strictly 100% authentic Windows-era copy. Jokes, Taskintosh cultural exchange, and easter eggs appear only when explicitly requesting theatrical / high-vibes mode.
 - **No Intrusive Modern Overlays**: Modern translucent emoji completion overlays have been completely removed from classic eras; classic dialogs transition seamlessly into their native "OK" state.
 - **Clean Screenshot Preview**: Built-in screenshot mode renders only the classic dialog floating over an authentic `#008080` Windows teal desktop, with zero developer toolbars or floating buttons.
 - **Never Traps the User**: Emergency exit mechanisms are baked in via the Escape key, Cancel buttons, and an explicit controller `cancel()` API.
-- **Completely Isolated**: Built as an independent module with zero dependencies on in-progress Start menu or taskbar code, ready for one-line integration whenever Antigravity is ready.
+- **Independently Testable**: Built as a self-contained module with a stable integration facade. It powers Taskintosh directly while remaining independently previewable and testable.
 
 ---
 
@@ -27,7 +27,7 @@ ProceduralWindowsUpdate/
 ├── Package.swift                                # Independent Swift Package (macOS 13+)
 ├── README.md                                    # This document
 ├── scripts/
-│   ├── run-tests.sh                             # Automated test suite runner (71 tests)
+│   ├── run-tests.sh                             # Automated test suite runner (283 checks)
 │   └── run-preview.sh                           # Launches standalone interactive preview GUI
 ├── Sources/
 │   └── ProceduralWindowsUpdate/
@@ -62,7 +62,7 @@ ProceduralWindowsUpdate/
 │       │   │   └── Spinners.swift               # Win10 Dotted & Win11 Fluent spinners
 │       │   └── FakeUpdateWindowController.swift # AppKit NSWindowController wrapper with Esc intercept
 │       └── Renderers/
-│           ├── Win95UpdateRenderer.swift        # Compact 350x195 Win95/98/ME setup dialog
+│           ├── Win95UpdateRenderer.swift        # Compact 350x195 Win95/98/ME update dialog
 │           ├── WinXPUpdateRenderer.swift        # Windows XP Luna blue Automatic Updates wizard
 │           ├── WinVistaUpdateRenderer.swift     # Windows Vista Aero dark glass
 │           ├── Win7UpdateRenderer.swift         # Windows 7 iconic "Installing update X of Y"
@@ -73,7 +73,7 @@ ProceduralWindowsUpdate/
 ├── PreviewApp/
 │   └── main.swift                               # Interactive macOS test app with clean screenshot mode
 └── Tests/
-    ├── TestRunner/main.swift                    # Command-line test suite runner (71 tests)
+    ├── TestRunner/main.swift                    # Command-line test suite runner (283 checks)
     └── ProceduralWindowsUpdateTests/            # Standard XCTest test suite for Xcode
 ```
 
@@ -93,11 +93,11 @@ ProceduralWindowsUpdate/
 
 ## Running Tests & Preview
 
-### Run Automated Tests (71 Checks)
+### Run Automated Tests (283 Checks)
 ```bash
 ./scripts/run-tests.sh
 ```
-All 71 assertions pass with 0 failures, verifying:
+All 283 checks pass with 0 failures, verifying:
 1. Deterministic seed reproduction.
 2. Distinct seeds produce different sessions.
 3. Default authentic mode strictly excludes comedic phrases and rare events.

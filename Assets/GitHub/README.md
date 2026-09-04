@@ -18,8 +18,8 @@ All assets based on the locked Direction A logo.
 |------|-----|
 | `lockup-light.png` | Logo + “Taskintosh” on white |
 | `lockup-dark.png` | Logo + “Taskintosh” on black |
-| `lockup-light-transparent.png` | Transparent light lockup |
-| `lockup-dark-transparent.png` | Transparent dark lockup |
+| `../Branding/taskintosh-lockup-light-transparent.png` | Transparent light lockup |
+| `../Branding/taskintosh-lockup-dark-transparent.png` | Transparent dark lockup |
 
 ## Social / Open Graph
 | File | Use |
