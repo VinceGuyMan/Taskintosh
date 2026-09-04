@@ -2,10 +2,9 @@
 
 <p align="center">
   <a href="https://raw.githubusercontent.com/VinceGuyMan/Taskintosh/main/Assets/GitHub/TaskinToshIntro.mp4">
-    <img src="Assets/GitHub/taskintosh-intro-poster.png" width="920" alt="Taskintosh introduction video — click to play">
+    <img src="Assets/GitHub/taskintosh-intro-1504x832.webp" width="920" alt="Taskintosh animated introduction — click to open the MP4">
   </a>
 </p>
-<p align="center"><a href="https://raw.githubusercontent.com/VinceGuyMan/Taskintosh/main/Assets/GitHub/TaskinToshIntro.mp4">▶ Play the smooth MP4 introduction</a></p>
 
 > *“Desktop history, openly rebuilt for Mac.”*
 
