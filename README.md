@@ -38,6 +38,14 @@ An **Era** defines:
 
 Taskintosh ships with six original, legally clean reference Eras: **Windows 95 Classic, Windows XP Luna, Windows 7, Windows 8, Windows 10, and Windows 11**. Earlier experimental era packs are retained in `ArchivedEras/` and are not bundled.
 
+### Procedural Windows Update
+
+For a smaller, delightfully fake side project, Taskintosh also includes [`ProceduralWindowsUpdate`](ProceduralWindowsUpdate/): a deterministic, theatrical Windows Update simulator that never touches the real system. Its centerpiece is an era-authentic Windows 95/98/ME setup dialog, complete with compact Win32 geometry, classic navy title bars, chunky recessed progress bars, generated KB details, stalls, pacing, and optional Taskintosh easter eggs. The isolated Swift package includes a clean interactive preview and test suite, so it can be explored independently of the main taskbar app.
+
+<p align="center">
+  <a href="ProceduralWindowsUpdate/README.md">Explore the Procedural Windows Update side project →</a>
+</p>
+
 - **Authentic 3D Bevels**: Pixel-accurate raised, sunken, and etched CoreGraphics rendering with genuine light highlight, shadow, and dark shadow borders.
 - **Classic Start Button**: Tactile button with original 4-quadrant geometric retro emblem and bold typography.
 - **Start Menus**: Era-specific layouts ranging from the Windows 95 Programs cascade to XP's two-column menu, Windows 7's glass menu, Windows 8 tiles, Windows 10's hybrid menu, and Windows 11's centered launcher.

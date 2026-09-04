@@ -131,13 +131,13 @@ public struct Win95UpdateRenderer: View {
     private var titleText: String {
         switch controller.activeEra {
         case .win95:
-            return "Windows 95 Setup"
+            return "Windows 95 Update"
         case .win98:
-            return "Windows 98 Setup"
+            return "Windows 98 Update"
         case .winME:
             return "Windows Millennium Edition Update"
         default:
-            return "\(controller.activeEra.rawValue) Setup"
+            return "\(controller.activeEra.rawValue) Update"
         }
     }
 

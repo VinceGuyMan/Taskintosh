@@ -51,7 +51,7 @@ public final class FakeUpdateWindowController: NSWindowController, NSWindowDeleg
 
         let targetSize = controller.activeEra.windowSize
         let styleMask: NSWindow.StyleMask = cleanPresentationMode
-            ? [.titled, .fullSizeContentView]
+            ? [.borderless]
             : [.titled, .closable, .miniaturizable]
 
         let window = FakeUpdateAppKitWindow(

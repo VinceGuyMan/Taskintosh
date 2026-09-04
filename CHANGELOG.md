@@ -2,6 +2,18 @@
 
 All notable changes to **Taskintosh** are documented here. The project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-09-04
+
+### Fixed
+
+- Restored mouse interaction for classic Windows Update buttons by excluding decorative bevel overlays from hit testing.
+- Removed rounded native window chrome from clean classic dialogs so Win95/98/ME updates render as square period-authentic windows.
+- Renamed classic dialog titles from “Setup” to “Update” to accurately describe the simulated experience.
+
+### Verification
+
+- 283 ProceduralWindowsUpdate runner checks passed.
+
 ## [1.0.0] - 2026-09-03
 
 ### Added

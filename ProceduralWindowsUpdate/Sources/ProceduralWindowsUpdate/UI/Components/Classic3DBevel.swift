@@ -108,6 +108,9 @@ public struct Classic3DBevel: ViewModifier {
                     context.fill(Path(CGRect(x: 0, y: 1, width: w, height: 1)), with: .color(Self.buttonHilight))
                 }
             }
+            // The bevel is decorative; it must never sit in front of the
+            // Button's label and intercept its mouse events.
+            .allowsHitTesting(false)
         )
     }
 }

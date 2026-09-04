@@ -14,6 +14,6 @@ import Foundation
 /// - Canonical easter egg: "Updating Windows Update so Windows Update can update Windows Update".
 /// - Emergency exit guarantees via Esc and Cancel buttons.
 public enum ProceduralWindowsUpdateInfo {
-    public static let version = "1.0.0"
+    public static let version = "1.1.0"
     public static let moduleName = "ProceduralWindowsUpdate"
 }
