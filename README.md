@@ -1,10 +1,11 @@
 # TASKINTOSH
 
 <p align="center">
-  <video src="Assets/GitHub/TaskinToshIntro.mp4" width="920" autoplay loop muted playsinline controls>
-    <a href="Assets/GitHub/TaskinToshIntro.mp4">Watch the Taskintosh introduction</a>
-  </video>
+  <a href="https://raw.githubusercontent.com/VinceGuyMan/Taskintosh/main/Assets/GitHub/TaskinToshIntro.mp4">
+    <img src="Assets/GitHub/taskintosh-intro-poster.png" width="920" alt="Taskintosh introduction video — click to play">
+  </a>
 </p>
+<p align="center"><a href="https://raw.githubusercontent.com/VinceGuyMan/Taskintosh/main/Assets/GitHub/TaskinToshIntro.mp4">▶ Play the smooth MP4 introduction</a></p>
 
 > *“Desktop history, openly rebuilt for Mac.”*
 
