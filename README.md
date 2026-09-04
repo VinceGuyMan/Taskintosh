@@ -1,7 +1,7 @@
 # TASKINTOSH
 
 <p align="center">
-  <img src="Assets/GitHub/readme-hero-light.png" width="836" alt="Taskintosh — Desktop history, openly rebuilt for Mac.">
+  <img src="Assets/GitHub/taskintosh-intro-1472x800.webp" width="920" alt="Animated Taskintosh introduction">
 </p>
 
 > *“Desktop history, openly rebuilt for Mac.”*
@@ -52,6 +52,19 @@ Taskintosh ships with six original, legally clean reference Eras: **Windows 95 C
 <p align="center">
   <img src="Assets/GitHub/screenshots/menu_windows81.png" width="47%" alt="Windows 8.1 Start screen">
   <img src="Assets/GitHub/screenshots/menu_windows11.png" width="47%" alt="Windows 11 centered Start menu">
+</p>
+
+### Taskbars Across Eras
+
+<p align="center">
+  <img src="Assets/GitHub/screenshots/taskbar_windows95.png" width="31%" alt="Windows 95 taskbar">
+  <img src="Assets/GitHub/screenshots/taskbar_windowsxp.png" width="31%" alt="Windows XP Luna taskbar">
+  <img src="Assets/GitHub/screenshots/taskbar_windows7.png" width="31%" alt="Windows 7 taskbar">
+</p>
+<p align="center">
+  <img src="Assets/GitHub/screenshots/taskbar_windows8.png" width="31%" alt="Windows 8 taskbar">
+  <img src="Assets/GitHub/screenshots/taskbar_windows10.png" width="31%" alt="Windows 10 taskbar">
+  <img src="Assets/GitHub/screenshots/taskbar_windows11.png" width="31%" alt="Windows 11 taskbar">
 </p>
 
 ---
@@ -135,3 +148,7 @@ TaskinTosh/
 ## License & Attribution
 
 Taskintosh is released under the [MIT License](LICENSE). It is an original, clean-room recreation and does **not** contain or redistribute any proprietary Microsoft artwork, copyrighted trademarks, commercial sound files, or binary extracts. See [LEGAL-ASSET-NOTES.md](LEGAL-ASSET-NOTES.md) for full compliance details.
+
+<p align="center">
+  <img src="Assets/GitHub/readme-hero-light.png" width="836" alt="Taskintosh — Desktop history, openly rebuilt for Mac.">
+</p>
