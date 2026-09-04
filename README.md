@@ -1,7 +1,9 @@
 # TASKINTOSH
 
 <p align="center">
-  <img src="Assets/GitHub/taskintosh-intro-1472x800.webp" width="920" alt="Animated Taskintosh introduction">
+  <video src="Assets/GitHub/TaskinToshIntro.mp4" width="920" autoplay loop muted playsinline controls>
+    <a href="Assets/GitHub/TaskinToshIntro.mp4">Watch the Taskintosh introduction</a>
+  </video>
 </p>
 
 > *“Desktop history, openly rebuilt for Mac.”*
