@@ -1,5 +1,6 @@
-import AppKit
 import TaskintoshKit
+import AppKit
+
 
 public final class TaskbarPanel: NSPanel {
     public init(contentRect: NSRect) {
@@ -29,10 +30,21 @@ public final class TaskbarPanel: NSPanel {
     }
 
     /// Updates the panel's geometry to match the active era and screen configuration.
-    public func updateGeometry(era: EraPackage, screen: NSScreen) {
+    public func updateGeometry(era: EraPackage, screen: NSScreen, preset: TaskbarSizePreset? = nil) {
+        let sizePreset: TaskbarSizePreset
+        if let p = preset {
+            sizePreset = p
+        } else if let raw = UserDefaults.standard.string(forKey: "TaskbarSizePreset"),
+                  let p = TaskbarSizePreset(rawValue: raw) {
+            sizePreset = p
+        } else {
+            sizePreset = .normal
+        }
+
+        let height = era.layout.taskbarHeight(for: sizePreset)
         let targetFrame = DisplayManager.shared.frame(
             for: era.layout.defaultEdge,
-            height: era.layout.taskbarHeight,
+            height: height,
             on: screen
         )
         self.setFrame(targetFrame, display: true, animate: false)

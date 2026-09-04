@@ -1,0 +1,9 @@
+{
+  "id": "org.taskintosh.era.windows11",
+  "name": "Windows 11",
+  "version": "1.0.0",
+  "author": "Taskintosh Project",
+  "eraPeriod": "2021-Present",
+  "description": "Centered taskbar geometry with translucent mica finish, rounded pill plates, and modern blue emblem.",
+  "minEngineVersion": "1.0.0"
+}

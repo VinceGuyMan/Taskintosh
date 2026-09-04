@@ -1,6 +1,6 @@
 # Taskintosh Roadmap
 
-> *“The wrong taskbar for the right computer.”*
+> *“Desktop history, openly rebuilt for Mac.”*
 
 This roadmap outlines the planned evolution of Taskintosh across desktop computing history.
 
@@ -21,47 +21,44 @@ This roadmap outlines the planned evolution of Taskintosh across desktop computi
 
 ---
 
-## Phase 2: The Late 90s (Windows 98, ME, 2000)
-- [ ] **QuickLaunch Toolbar**: Pinned shortcuts alongside the Start button with drag-and-drop reordering.
-- [ ] **Gradient Menus**: Multi-color menu header banners and customizable Start menu styling.
-- [ ] **Volume & Status Tray Sliders**: Interactive popup sliders for macOS audio and screen brightness.
-- [ ] **Desktop Toolbars**: Additional detachable toolbars (Address bar, Links bar).
+## Supported Era Scope
+
+The current supported release focuses on six polished reference eras: Windows 95, XP, 7, 8, 10, and 11. Experimental Windows 98, ME, 2000, Vista, System 7, NeXTSTEP, BeOS, and AmigaOS packs are retained under `ArchivedEras/` for possible future refinement and are not packaged.
+
+## Future Era Work
+
+- [ ] Revisit archived historical eras only after the six supported eras meet release-quality visual and interaction standards.
 
 ---
 
-## Phase 3: The 2000s & Luna (Windows XP)
-- [ ] **Luna Visual Styles**:
-  - Blue (default Luna)
-  - Olive Green (Homestead)
-  - Metallic Silver
-  - Royale / Energy Blue (Media Center Edition)
-  - Zune Theme
-- [ ] **Two-Column Start Menu**: Pinned apps on the left, system locations (My Documents, Control Panel) on the right.
-- [ ] **Task Grouping**: "Group similar taskbar buttons" when screen space becomes constrained.
-- [ ] **Notification Balloons**: Balloon-style notification toasts integrating with macOS UserNotifications.
+## Windows XP Luna (Supported)
+- [x] **Luna Visual Style**: Royal blue Luna taskbar with curved green Start pill.
+- [x] **Two-Column Start Menu**: Pinned apps on the left, user profile header and system locations on the right.
+- [x] **Era Package**: Windows XP Luna (`WindowsXP.taskintosh-era`).
 
 ---
 
-## Phase 4: The Aero Era (Windows Vista & Windows 7)
-- [ ] **Aero Glass Rendering**: Native translucent glass with blurred desktop refraction using macOS CoreImage `CIGaussianBlur` / `CABackdropLayer`.
-- [ ] **Live Window Thumbnails**: Hovering taskbar buttons reveals real-time window preview thumbnails captured via `CGWindowListCreateImage`.
-- [ ] **Superbar Pinning**: Windows 7 style combined application launcher and running task indicators.
-- [ ] **Jump Lists**: Right-click context menus with recent files and application actions.
+## Windows 7 Superbar (Supported)
+- [x] **Aero Glass Rendering**: Translucent dark glass styling with specular highlight lines.
+- [x] **Superbar Styling**: Windows 7 40px Superbar with square icon-only button plates.
+- [x] **Aero Peek**: Far-right screen desktop peek button.
+- [x] **Era Package**: Windows 7 Superbar (`Windows7.taskintosh-era`).
 
 ---
 
-## Phase 5: Modern Eras (Windows 8, 10, 11)
-- [ ] **Windows 8 Charms / Start Screen Concept**: Full-screen tile launcher overlay option.
-- [ ] **Windows 10 Fluent Style**: Dark/light mode theme switching with acrylic blur.
-- [ ] **Windows 11 Centered Taskbar**: Centered taskbar icons with customizable alignment (Left vs. Center).
+## Modern Eras (Windows 8, 10, 11) (Supported)
+- [x] **Windows 8 Flat Tiles**: Sharp flat monochrome emblem and accent underline indicators.
+- [x] **Windows 10 Acrylic**: Dark acrylic taskbar styling.
+- [x] **Windows 11 Centered Taskbar**: Centered taskbar icons with mica translucency and rounded pill plates.
+- [x] **Era Packages**: Windows 8.1, Windows 10, and Windows 11.
 
 ---
 
-## Phase 6: Alternative Desktop History & Community Ecosystem
+## Future Alternative Desktop History
 - [ ] **Alternative OS Eras**:
-  - NeXTSTEP / OPENSTEP Shelf
-  - BeOS Tracker Deskbar
-  - Classic Macintosh System 7 / OS 8 Menu & Control Strip
-  - AmigaOS Workbench
+  - Classic Macintosh System 7 (`System7.taskintosh-era`): Top desktop menu bar with retro Apple menu and right-side app switcher.
+  - NeXTSTEP / OPENSTEP (`NeXTSTEP.taskintosh-era`): Right-docked vertical shelf with 64px 3D beveled tiles.
+  - BeOS Deskbar (`BeOS.taskintosh-era`): Modular top deskbar with blue/red Be logo button.
+  - AmigaOS Workbench (`AmigaOS.taskintosh-era`): Royal blue and vibrant orange high-contrast title bar with depth gadget.
 - [ ] **Community Era Marketplace**: In-app catalog to browse, preview, and download community-created `.taskintosh-era` packages directly from GitHub.
 - [ ] **Theme Studio**: Visual Era creator allowing users to design and export `.taskintosh-era` packs without writing JSON manually.

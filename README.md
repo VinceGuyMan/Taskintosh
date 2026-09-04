@@ -1,6 +1,6 @@
 # TASKINTOSH
 
-> *“The wrong taskbar for the right computer.”*
+> *“Desktop history, openly rebuilt for Mac.”*
 
 **Taskintosh** is a native macOS taskbar recreation and desktop-history platform. It enables Mac users to replace or supplement the traditional macOS Dock with faithful recreations of taskbars, Start menus, system trays, behaviors, animations, and interaction patterns from desktop computing history.
 
@@ -30,11 +30,11 @@ An **Era** defines:
 
 ## Reference Era: Windows 95
 
-Taskintosh ships with an original, legally clean reference Era: **Windows 95 Classic** (`Windows95.taskintosh-era`).
+Taskintosh ships with six original, legally clean reference Eras: **Windows 95 Classic, Windows XP Luna, Windows 7, Windows 8, Windows 10, and Windows 11**. Earlier experimental era packs are retained in `ArchivedEras/` and are not bundled.
 
 - **Authentic 3D Bevels**: Pixel-accurate raised, sunken, and etched CoreGraphics rendering with genuine light highlight, shadow, and dark shadow borders.
 - **Classic Start Button**: Tactile button with original 4-quadrant geometric retro emblem and bold typography.
-- **Start Menu**: Classic 90s gradient vertical branding banner (*"Taskintosh 95"*), Programs cascade indexing all installed macOS applications, Documents, Settings, Find, Help, Run, and Shut Down.
+- **Start Menus**: Era-specific layouts ranging from the Windows 95 Programs cascade to XP's two-column menu, Windows 7's glass menu, Windows 8 tiles, Windows 10's hybrid menu, and Windows 11's centered launcher.
 - **Dynamic Task Buttons**: Reflects actual running macOS regular GUI applications. Active applications feature the iconic 50% checkerboard sunken dither pattern; clicking the active button minimizes the app.
 - **System Tray**: Sunken bezel clock updating every second, volume indicator, and Era Switcher shortcut.
 - **Functional Retro Dialogs**: Genuine **Run...** dialog (opens apps, URLs, paths, terminal commands) and **Shut Down...** dialog (handles macOS sleep, restart, and shutdown).
@@ -91,7 +91,12 @@ TaskinTosh/
 │   │   ├── Graphics/                # BevelRenderer, ProceduralIcons
 │   │   ├── Models/                  # TaskItem
 │   │   └── Resources/Eras/          # Bundled .taskintosh-era packages
-│   │       └── Windows95.taskintosh-era/
+│   │       ├── Windows95.taskintosh-era/
+│   │       ├── WindowsXP.taskintosh-era/
+│   │       ├── Windows7.taskintosh-era/
+│   │       ├── Windows8.taskintosh-era/
+│   │       ├── Windows10.taskintosh-era/
+│   │       └── Windows11.taskintosh-era/
 │   │           ├── manifest.json
 │   │           ├── layout.json
 │   │           ├── theme.json
@@ -114,4 +119,4 @@ TaskinTosh/
 
 ## License & Attribution
 
-Taskintosh is an open-source macOS utility. It is an original, clean-room recreation and does **not** contain or redistribute any proprietary Microsoft artwork, copyrighted trademarks, commercial sound files, or binary extracts. See [LEGAL-ASSET-NOTES.md](file:///Users/homebase/Documents/antigravity/TaskinTosh/LEGAL-ASSET-NOTES.md) for full compliance details.
+Taskintosh is released under the [MIT License](LICENSE). It is an original, clean-room recreation and does **not** contain or redistribute any proprietary Microsoft artwork, copyrighted trademarks, commercial sound files, or binary extracts. See [LEGAL-ASSET-NOTES.md](LEGAL-ASSET-NOTES.md) for full compliance details.

@@ -1,0 +1,22 @@
+{
+  "backgroundColorHex": "#E8E8E8",
+  "surfaceColorHex": "#D8D8D8",
+  "lightHighlightColorHex": "#FFFFFF",
+  "shadowColorHex": "#A8A8A8",
+  "darkShadowColorHex": "#606060",
+  "textColorHex": "#000000",
+  "activeTextColorHex": "#000000",
+  "bannerStartColorHex": "#0A246A",
+  "bannerEndColorHex": "#3060C0",
+  "accentColorHex": "#2B58A8",
+  "bevelStyle": "classic3D",
+  "ditherActiveButton": false,
+  "fontSize": 11,
+  "fontName": null,
+  "startButtonText": "Be",
+  "bannerText": "BeOS Deskbar",
+  "translucencyStyle": "opaque",
+  "accentIndicatorStyle": "sunken",
+  "startButtonStyle": "beLogo",
+  "startMenuType": "beDeskbarMenu"
+}

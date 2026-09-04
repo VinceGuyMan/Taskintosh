@@ -1,5 +1,6 @@
-import AppKit
 import TaskintoshKit
+import AppKit
+
 
 public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableViewDelegate {
     private let tableView = NSTableView()
@@ -34,7 +35,7 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
         contentView.addSubview(header)
 
         // Subtitle
-        let subheader = NSTextField(labelWithString: "“The wrong taskbar for the right computer.”")
+        let subheader = NSTextField(labelWithString: "“Desktop history, openly rebuilt for Mac.”")
         subheader.frame = NSRect(x: 20, y: 378, width: 400, height: 18)
         subheader.font = NSFont.systemFont(ofSize: 11)
         subheader.textColor = .secondaryLabelColor

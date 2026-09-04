@@ -1,0 +1,9 @@
+{
+  "id": "org.taskintosh.era.windows10",
+  "name": "Windows 10",
+  "version": "1.0.0",
+  "author": "Taskintosh Project",
+  "eraPeriod": "2015-2021",
+  "description": "Dark acrylic taskbar with flat monochrome logo and illuminated accent line indicators.",
+  "minEngineVersion": "1.0.0"
+}

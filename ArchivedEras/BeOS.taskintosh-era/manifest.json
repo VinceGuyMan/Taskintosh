@@ -1,0 +1,9 @@
+{
+  "id": "org.taskintosh.era.beos",
+  "name": "BeOS Deskbar",
+  "version": "1.0.0",
+  "author": "Taskintosh Project",
+  "eraPeriod": "1995-2001",
+  "description": "Clean modular Deskbar with blue/red Be button and expandable task drawer.",
+  "minEngineVersion": "1.0.0"
+}

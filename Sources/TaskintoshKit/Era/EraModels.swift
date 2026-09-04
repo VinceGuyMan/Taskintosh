@@ -24,6 +24,105 @@ public enum WindowGrouping: String, Codable {
     case alwaysGroup
 }
 
+public enum TaskbarStyle: String, Codable {
+    case classic
+    case centered
+    case topMenuBar
+    case verticalShelf
+    case deskbar
+}
+
+public enum TaskButtonStyle: String, Codable {
+    case standard
+    case iconOnly
+    case pill
+    case tile
+}
+
+public enum TaskAlignment: String, Codable {
+    case leading
+    case center
+    case trailing
+}
+
+public enum ShowDesktopButton: String, Codable {
+    case none
+    case farRightPeek
+    case amigaGadget
+}
+
+public enum TranslucencyStyle: String, Codable {
+    case opaque
+    case glass
+    case acrylic
+    case mica
+}
+
+public enum AccentIndicatorStyle: String, Codable {
+    case sunken
+    case glowPill
+    case bottomLine
+    case dot
+    case tileBevel
+    case macCheckmark
+}
+
+public enum StartButtonStyle: String, Codable {
+    case classicRect
+    case classicGreen
+    case lunaPill
+    case aeroOrb
+    case flatTiles
+    case win11Centered
+    case appleMenu
+    case nextIcon
+    case beLogo
+    case amigaTitle
+}
+
+public enum OverflowStrategy: String, Codable {
+    case scrollButtons
+    case grouping
+    case chevronMenu
+    case iconOnly
+}
+
+public enum StartMenuType: String, Codable {
+    case classicOneColumn
+    case twoColumnXP
+    case twoColumnGlass
+    case tileLauncher
+    case hybridMenu
+    case centeredFlyout
+    case modernTiles
+    case appleDropdown
+    case nextShelfMenu
+    case beDeskbarMenu
+    case amigaPullDown
+}
+
+public enum TaskbarSizePreset: String, Codable, CaseIterable {
+    case small
+    case normal
+    case large
+
+    public var displayName: String {
+        switch self {
+        case .small: return "Small Icons / Compact"
+        case .normal: return "Standard (Default)"
+        case .large: return "Large Icons / Expanded"
+        }
+    }
+
+    public var multiplier: CGFloat {
+        switch self {
+        case .small: return 0.85
+        case .normal: return 1.0
+        case .large: return 1.25
+        }
+    }
+}
+
 public struct EraManifest: Codable, Equatable {
     public let id: String
     public let name: String
@@ -63,6 +162,13 @@ public struct EraLayoutConfig: Codable, Equatable {
     public var taskButtonMinWidth: CGFloat
     public var taskButtonMaxWidth: CGFloat
     public var trayPadding: CGFloat
+    public var taskbarStyle: TaskbarStyle
+    public var buttonStyle: TaskButtonStyle
+    public var alignment: TaskAlignment
+    public var cornerRadius: CGFloat
+    public var quickLaunchEnabled: Bool
+    public var showDesktopButton: ShowDesktopButton
+    public var overflowStrategy: OverflowStrategy
 
     public init(
         defaultEdge: TaskbarEdge = .bottom,
@@ -72,9 +178,16 @@ public struct EraLayoutConfig: Codable, Equatable {
         paddingVertical: CGFloat = 2,
         startButtonWidth: CGFloat = 56,
         startButtonHeight: CGFloat? = nil,
-        taskButtonMinWidth: CGFloat = 40,
+        taskButtonMinWidth: CGFloat = 130,
         taskButtonMaxWidth: CGFloat = 160,
-        trayPadding: CGFloat = 4
+        trayPadding: CGFloat = 4,
+        taskbarStyle: TaskbarStyle = .classic,
+        buttonStyle: TaskButtonStyle = .standard,
+        alignment: TaskAlignment = .leading,
+        cornerRadius: CGFloat = 0,
+        quickLaunchEnabled: Bool = false,
+        showDesktopButton: ShowDesktopButton = .none,
+        overflowStrategy: OverflowStrategy = .scrollButtons
     ) {
         self.defaultEdge = defaultEdge
         self.taskbarHeight = taskbarHeight
@@ -86,6 +199,45 @@ public struct EraLayoutConfig: Codable, Equatable {
         self.taskButtonMinWidth = taskButtonMinWidth
         self.taskButtonMaxWidth = taskButtonMaxWidth
         self.trayPadding = trayPadding
+        self.taskbarStyle = taskbarStyle
+        self.buttonStyle = buttonStyle
+        self.alignment = alignment
+        self.cornerRadius = cornerRadius
+        self.quickLaunchEnabled = quickLaunchEnabled
+        self.showDesktopButton = showDesktopButton
+        self.overflowStrategy = overflowStrategy
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        defaultEdge = try container.decodeIfPresent(TaskbarEdge.self, forKey: .defaultEdge) ?? .bottom
+        taskbarHeight = try container.decodeIfPresent(CGFloat.self, forKey: .taskbarHeight) ?? 28
+        itemSpacing = try container.decodeIfPresent(CGFloat.self, forKey: .itemSpacing) ?? 2
+        paddingHorizontal = try container.decodeIfPresent(CGFloat.self, forKey: .paddingHorizontal) ?? 2
+        paddingVertical = try container.decodeIfPresent(CGFloat.self, forKey: .paddingVertical) ?? 2
+        startButtonWidth = try container.decodeIfPresent(CGFloat.self, forKey: .startButtonWidth) ?? 56
+        startButtonHeight = try container.decodeIfPresent(CGFloat.self, forKey: .startButtonHeight)
+        taskButtonMinWidth = try container.decodeIfPresent(CGFloat.self, forKey: .taskButtonMinWidth) ?? 130
+        taskButtonMaxWidth = try container.decodeIfPresent(CGFloat.self, forKey: .taskButtonMaxWidth) ?? 160
+        trayPadding = try container.decodeIfPresent(CGFloat.self, forKey: .trayPadding) ?? 4
+        taskbarStyle = try container.decodeIfPresent(TaskbarStyle.self, forKey: .taskbarStyle) ?? .classic
+        buttonStyle = try container.decodeIfPresent(TaskButtonStyle.self, forKey: .buttonStyle) ?? .standard
+        alignment = try container.decodeIfPresent(TaskAlignment.self, forKey: .alignment) ?? .leading
+        cornerRadius = try container.decodeIfPresent(CGFloat.self, forKey: .cornerRadius) ?? 0
+        quickLaunchEnabled = try container.decodeIfPresent(Bool.self, forKey: .quickLaunchEnabled) ?? false
+        showDesktopButton = try container.decodeIfPresent(ShowDesktopButton.self, forKey: .showDesktopButton) ?? .none
+        overflowStrategy = try container.decodeIfPresent(OverflowStrategy.self, forKey: .overflowStrategy) ?? (buttonStyle == .iconOnly || buttonStyle == .pill ? .iconOnly : .scrollButtons)
+    }
+
+    public func taskbarHeight(for preset: TaskbarSizePreset) -> CGFloat {
+        switch preset {
+        case .small:
+            return max(22, round(taskbarHeight * 0.85))
+        case .normal:
+            return taskbarHeight
+        case .large:
+            return round(taskbarHeight * 1.25)
+        }
     }
 }
 
@@ -106,6 +258,10 @@ public struct EraVisualTheme: Codable, Equatable {
     public var fontName: String?
     public var startButtonText: String
     public var bannerText: String
+    public var translucencyStyle: TranslucencyStyle
+    public var accentIndicatorStyle: AccentIndicatorStyle
+    public var startButtonStyle: StartButtonStyle
+    public var startMenuType: StartMenuType
 
     public init(
         backgroundColorHex: String = "#C0C0C0",
@@ -123,7 +279,11 @@ public struct EraVisualTheme: Codable, Equatable {
         fontSize: CGFloat = 11,
         fontName: String? = nil,
         startButtonText: String = "Start",
-        bannerText: String = "Taskintosh 95"
+        bannerText: String = "Taskintosh 95",
+        translucencyStyle: TranslucencyStyle = .opaque,
+        accentIndicatorStyle: AccentIndicatorStyle = .sunken,
+        startButtonStyle: StartButtonStyle = .classicRect,
+        startMenuType: StartMenuType = .classicOneColumn
     ) {
         self.backgroundColorHex = backgroundColorHex
         self.surfaceColorHex = surfaceColorHex
@@ -141,6 +301,34 @@ public struct EraVisualTheme: Codable, Equatable {
         self.fontName = fontName
         self.startButtonText = startButtonText
         self.bannerText = bannerText
+        self.translucencyStyle = translucencyStyle
+        self.accentIndicatorStyle = accentIndicatorStyle
+        self.startButtonStyle = startButtonStyle
+        self.startMenuType = startMenuType
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        backgroundColorHex = try container.decodeIfPresent(String.self, forKey: .backgroundColorHex) ?? "#C0C0C0"
+        surfaceColorHex = try container.decodeIfPresent(String.self, forKey: .surfaceColorHex) ?? "#C0C0C0"
+        lightHighlightColorHex = try container.decodeIfPresent(String.self, forKey: .lightHighlightColorHex) ?? "#FFFFFF"
+        shadowColorHex = try container.decodeIfPresent(String.self, forKey: .shadowColorHex) ?? "#808080"
+        darkShadowColorHex = try container.decodeIfPresent(String.self, forKey: .darkShadowColorHex) ?? "#000000"
+        textColorHex = try container.decodeIfPresent(String.self, forKey: .textColorHex) ?? "#000000"
+        activeTextColorHex = try container.decodeIfPresent(String.self, forKey: .activeTextColorHex) ?? "#000000"
+        bannerStartColorHex = try container.decodeIfPresent(String.self, forKey: .bannerStartColorHex) ?? "#000080"
+        bannerEndColorHex = try container.decodeIfPresent(String.self, forKey: .bannerEndColorHex) ?? "#1084D0"
+        accentColorHex = try container.decodeIfPresent(String.self, forKey: .accentColorHex) ?? "#000080"
+        bevelStyle = try container.decodeIfPresent(BevelStyle.self, forKey: .bevelStyle) ?? .classic3D
+        ditherActiveButton = try container.decodeIfPresent(Bool.self, forKey: .ditherActiveButton) ?? true
+        fontSize = try container.decodeIfPresent(CGFloat.self, forKey: .fontSize) ?? 11
+        fontName = try container.decodeIfPresent(String.self, forKey: .fontName)
+        startButtonText = try container.decodeIfPresent(String.self, forKey: .startButtonText) ?? "Start"
+        bannerText = try container.decodeIfPresent(String.self, forKey: .bannerText) ?? "Taskintosh 95"
+        translucencyStyle = try container.decodeIfPresent(TranslucencyStyle.self, forKey: .translucencyStyle) ?? .opaque
+        accentIndicatorStyle = try container.decodeIfPresent(AccentIndicatorStyle.self, forKey: .accentIndicatorStyle) ?? .sunken
+        startButtonStyle = try container.decodeIfPresent(StartButtonStyle.self, forKey: .startButtonStyle) ?? .classicRect
+        startMenuType = try container.decodeIfPresent(StartMenuType.self, forKey: .startMenuType) ?? .classicOneColumn
     }
 
     // Helper color accessors
@@ -175,6 +363,8 @@ public struct EraBehaviorConfig: Codable, Equatable {
     public var clickActiveAppAction: ClickActiveAction
     public var windowGrouping: WindowGrouping
     public var soundEffectsEnabled: Bool
+    public var quickLaunchSupported: Bool
+    public var unifiedSystemTrayCluster: Bool
 
     public init(
         autoHideSupported: Bool = true,
@@ -182,7 +372,9 @@ public struct EraBehaviorConfig: Codable, Equatable {
         autoHidePeekMargin: CGFloat = 2.0,
         clickActiveAppAction: ClickActiveAction = .minimize,
         windowGrouping: WindowGrouping = .none,
-        soundEffectsEnabled: Bool = false
+        soundEffectsEnabled: Bool = false,
+        quickLaunchSupported: Bool = false,
+        unifiedSystemTrayCluster: Bool = false
     ) {
         self.autoHideSupported = autoHideSupported
         self.autoHideDelaySeconds = autoHideDelaySeconds
@@ -190,6 +382,20 @@ public struct EraBehaviorConfig: Codable, Equatable {
         self.clickActiveAppAction = clickActiveAppAction
         self.windowGrouping = windowGrouping
         self.soundEffectsEnabled = soundEffectsEnabled
+        self.quickLaunchSupported = quickLaunchSupported
+        self.unifiedSystemTrayCluster = unifiedSystemTrayCluster
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        autoHideSupported = try container.decodeIfPresent(Bool.self, forKey: .autoHideSupported) ?? true
+        autoHideDelaySeconds = try container.decodeIfPresent(Double.self, forKey: .autoHideDelaySeconds) ?? 0.5
+        autoHidePeekMargin = try container.decodeIfPresent(CGFloat.self, forKey: .autoHidePeekMargin) ?? 2.0
+        clickActiveAppAction = try container.decodeIfPresent(ClickActiveAction.self, forKey: .clickActiveAppAction) ?? .minimize
+        windowGrouping = try container.decodeIfPresent(WindowGrouping.self, forKey: .windowGrouping) ?? .none
+        soundEffectsEnabled = try container.decodeIfPresent(Bool.self, forKey: .soundEffectsEnabled) ?? false
+        quickLaunchSupported = try container.decodeIfPresent(Bool.self, forKey: .quickLaunchSupported) ?? false
+        unifiedSystemTrayCluster = try container.decodeIfPresent(Bool.self, forKey: .unifiedSystemTrayCluster) ?? false
     }
 }
 

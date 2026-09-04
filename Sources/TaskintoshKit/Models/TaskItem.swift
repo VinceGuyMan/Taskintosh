@@ -10,7 +10,7 @@ public struct TaskItem: Identifiable, Equatable, Hashable {
     public var isActive: Bool
     public var isMinimized: Bool
     public var windowNumber: Int?
-    public weak var runningApp: NSRunningApplication?
+    public var runningApp: NSRunningApplication?
 
     public init(
         id: String,
@@ -32,6 +32,14 @@ public struct TaskItem: Identifiable, Equatable, Hashable {
         self.isMinimized = isMinimized
         self.windowNumber = windowNumber
         self.runningApp = runningApp
+    }
+
+    /// Resolves the NSRunningApplication handle, falling back to PID lookup if needed.
+    public func resolveApp() -> NSRunningApplication? {
+        if let app = runningApp, !app.isTerminated {
+            return app
+        }
+        return NSRunningApplication(processIdentifier: pid)
     }
 
     public static func == (lhs: TaskItem, rhs: TaskItem) -> Bool {

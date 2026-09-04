@@ -19,6 +19,12 @@ cp .build/release/Taskintosh "$MACOS_DIR/Taskintosh"
 # Copy Era packages
 cp -R Sources/TaskintoshKit/Resources/Eras/* "$RESOURCES_DIR/Eras/"
 
+# Copy Brand Assets & AppIcon
+mkdir -p "$RESOURCES_DIR/Brand"
+cp Sources/TaskintoshKit/Resources/Brand/* "$RESOURCES_DIR/Brand/" 2>/dev/null || true
+cp Sources/Taskintosh/Resources/AppIcon.icns "$RESOURCES_DIR/AppIcon.icns"
+cp Sources/Taskintosh/Resources/*.png "$RESOURCES_DIR/" 2>/dev/null || true
+
 # Create Info.plist
 cat << 'PLIST' > "$APP_DIR/Contents/Info.plist"
 <?xml version="1.0" encoding="UTF-8"?>
@@ -29,6 +35,8 @@ cat << 'PLIST' > "$APP_DIR/Contents/Info.plist"
     <string>en</string>
     <key>CFBundleExecutable</key>
     <string>Taskintosh</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
     <key>CFBundleIdentifier</key>
     <string>org.taskintosh.Taskintosh</string>
     <key>CFBundleInfoDictionaryVersion</key>

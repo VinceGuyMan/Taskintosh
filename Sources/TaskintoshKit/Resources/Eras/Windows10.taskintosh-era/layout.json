@@ -1,0 +1,17 @@
+{
+  "defaultEdge": "bottom",
+  "taskbarHeight": 40,
+  "itemSpacing": 2,
+  "paddingHorizontal": 2,
+  "paddingVertical": 2,
+  "startButtonWidth": 48,
+  "startButtonHeight": 36,
+  "taskButtonMinWidth": 140,
+  "taskButtonMaxWidth": 170,
+  "trayPadding": 4,
+  "taskbarStyle": "classic",
+  "buttonStyle": "standard",
+  "alignment": "leading",
+  "showDesktopButton": "farRightPeek",
+  "overflowStrategy": "chevronMenu"
+}

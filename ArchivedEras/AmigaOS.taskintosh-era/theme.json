@@ -1,0 +1,22 @@
+{
+  "backgroundColorHex": "#0055AA",
+  "surfaceColorHex": "#0055AA",
+  "lightHighlightColorHex": "#FFFFFF",
+  "shadowColorHex": "#002855",
+  "darkShadowColorHex": "#000000",
+  "textColorHex": "#FFFFFF",
+  "activeTextColorHex": "#FFFFFF",
+  "bannerStartColorHex": "#003366",
+  "bannerEndColorHex": "#FF8800",
+  "accentColorHex": "#FF8800",
+  "bevelStyle": "flat",
+  "ditherActiveButton": false,
+  "fontSize": 10,
+  "fontName": null,
+  "startButtonText": "Workbench",
+  "bannerText": "Amiga Workbench",
+  "translucencyStyle": "opaque",
+  "accentIndicatorStyle": "sunken",
+  "startButtonStyle": "amigaTitle",
+  "startMenuType": "amigaPullDown"
+}

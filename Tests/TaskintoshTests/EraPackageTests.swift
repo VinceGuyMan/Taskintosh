@@ -83,5 +83,14 @@ final class EraPackageTests: XCTestCase {
 
         let sound = ProceduralIcons.shared.soundIcon(size: 14)
         XCTAssertEqual(sound.size.width, 14)
+
+        let taskintosh = ProceduralIcons.shared.taskintoshIcon(size: 24)
+        XCTAssertEqual(taskintosh.size.width, 24)
+        XCTAssertEqual(taskintosh.size.height, 24)
+
+        let templateIcon = ProceduralIcons.shared.taskintoshTemplateIcon(size: 16)
+        XCTAssertEqual(templateIcon.size.width, 16)
+        XCTAssertEqual(templateIcon.size.height, 16)
+        XCTAssertTrue(templateIcon.isTemplate, "Menu bar icon must have isTemplate set to true to match macOS white status icons.")
     }
 }

@@ -1,0 +1,22 @@
+{
+  "backgroundColorHex": "#245EDC",
+  "surfaceColorHex": "#3E80F9",
+  "lightHighlightColorHex": "#64A5F8",
+  "shadowColorHex": "#1842A8",
+  "darkShadowColorHex": "#0E2868",
+  "textColorHex": "#FFFFFF",
+  "activeTextColorHex": "#FFFFFF",
+  "bannerStartColorHex": "#1D46B6",
+  "bannerEndColorHex": "#4A88F8",
+  "accentColorHex": "#3C8B22",
+  "bevelStyle": "flat",
+  "ditherActiveButton": false,
+  "fontSize": 11,
+  "fontName": null,
+  "startButtonText": "start",
+  "bannerText": "Taskintosh XP",
+  "translucencyStyle": "opaque",
+  "accentIndicatorStyle": "glowPill",
+  "startButtonStyle": "lunaPill",
+  "startMenuType": "twoColumnXP"
+}

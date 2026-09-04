@@ -1,0 +1,9 @@
+{
+  "id": "org.taskintosh.era.system7",
+  "name": "Classic Mac OS System 7",
+  "version": "1.0.0",
+  "author": "Taskintosh Project",
+  "eraPeriod": "1991-1997",
+  "description": "Top desktop menu bar with classic retro Apple menu and right-side Application Switcher.",
+  "minEngineVersion": "1.0.0"
+}

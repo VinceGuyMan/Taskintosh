@@ -1,0 +1,9 @@
+{
+  "id": "org.taskintosh.era.windows7",
+  "name": "Windows 7 Superbar",
+  "version": "1.0.0",
+  "author": "Taskintosh Project",
+  "eraPeriod": "2009-2012",
+  "description": "The iconic 40px glass Superbar with square icon plates and the far-right Aero Peek slice.",
+  "minEngineVersion": "1.0.0"
+}

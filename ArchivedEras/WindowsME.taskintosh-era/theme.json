@@ -1,0 +1,20 @@
+{
+  "backgroundColorHex": "#D4D0C8",
+  "surfaceColorHex": "#D4D0C8",
+  "lightHighlightColorHex": "#FFFFFF",
+  "shadowColorHex": "#808080",
+  "darkShadowColorHex": "#404040",
+  "textColorHex": "#000000",
+  "activeTextColorHex": "#000000",
+  "bannerStartColorHex": "#0A246A",
+  "bannerEndColorHex": "#A6CAF0",
+  "accentColorHex": "#0A246A",
+  "bevelStyle": "classic3D",
+  "ditherActiveButton": false,
+  "fontSize": 11,
+  "fontName": null,
+  "startButtonText": "Start",
+  "bannerText": "Taskintosh Me",
+  "startButtonStyle": "classicRect",
+  "startMenuType": "classicOneColumn"
+}

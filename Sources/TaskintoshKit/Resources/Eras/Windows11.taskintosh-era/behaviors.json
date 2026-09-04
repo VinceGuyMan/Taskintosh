@@ -1,0 +1,9 @@
+{
+  "autoHideSupported": true,
+  "autoHideDelaySeconds": 0.5,
+  "autoHidePeekMargin": 2.0,
+  "clickActiveAppAction": "minimize",
+  "windowGrouping": "alwaysGroup",
+  "soundEffectsEnabled": false,
+  "unifiedSystemTrayCluster": true
+}

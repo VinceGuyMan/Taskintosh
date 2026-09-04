@@ -1,0 +1,9 @@
+{
+  "id": "org.taskintosh.era.amigaos",
+  "name": "AmigaOS Workbench",
+  "version": "1.0.0",
+  "author": "Taskintosh Project",
+  "eraPeriod": "1985-1994",
+  "description": "Iconic high-contrast Workbench 1.3 screen title bar in royal blue and vibrant orange with depth gadget.",
+  "minEngineVersion": "1.0.0"
+}

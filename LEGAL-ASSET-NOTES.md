@@ -24,7 +24,7 @@ All visual assets included in the shipping repository and the default `Windows95
 
 ## 2. Trademarks & Brand References
 
-- **Taskintosh** is an original brand and parody/homage concept (*"The wrong taskbar for the right computer."*).
+- **Taskintosh** is an original brand and desktop-history recreation platform (*“Desktop history, openly rebuilt for Mac.”*).
 - References to historical operating systems (e.g., "Windows 95", "Windows XP", "Windows 7") are made solely for **nominative historical reference and compatibility identification** under fair use doctrine.
 - Taskintosh is not affiliated with, endorsed by, or sponsored by Microsoft Corporation or Apple Inc.
 

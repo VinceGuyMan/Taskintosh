@@ -1,5 +1,6 @@
-import AppKit
 import TaskintoshKit
+import AppKit
+
 
 public final class AutoHideController {
     public private(set) var isEnabled: Bool = false

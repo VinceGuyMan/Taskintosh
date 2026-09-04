@@ -1,5 +1,6 @@
-import AppKit
 import TaskintoshKit
+import AppKit
+
 
 public final class RunDialog: NSWindow {
     private let inputField = NSTextField()
@@ -83,6 +84,13 @@ public final class RunDialog: NSWindow {
         let text = inputField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
 
+        let lower = text.lowercased()
+        if lower == "windowsupdate" || lower == "update" || lower == "wuauclt" || lower == "wupdmgr" {
+            AppDelegate.shared?.openWindowsUpdate()
+            self.close()
+            return
+        }
+
         if text.hasPrefix("http://") || text.hasPrefix("https://"), let url = URL(string: text) {
             NSWorkspace.shared.open(url)
         } else if FileManager.default.fileExists(atPath: text) {
@@ -96,11 +104,8 @@ public final class RunDialog: NSWindow {
             } else if FileManager.default.fileExists(atPath: sysAppPath) {
                 NSWorkspace.shared.open(URL(fileURLWithPath: sysAppPath))
             } else {
-                // Execute command
-                let task = Process()
-                task.launchPath = "/bin/zsh"
-                task.arguments = ["-c", text]
-                try? task.run()
+                // Execute command with explicit confirmation
+                MacOSLocationsService.shared.confirmAndRunCommand(text, parentWindow: self) { _ in }
             }
         }
 

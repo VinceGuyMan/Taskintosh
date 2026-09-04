@@ -1,0 +1,9 @@
+{
+  "id": "org.taskintosh.era.nextstep",
+  "name": "NeXTSTEP / OPENSTEP",
+  "version": "1.0.0",
+  "author": "Taskintosh Project",
+  "eraPeriod": "1989-1996",
+  "description": "Vertical workstation shelf docked along the right edge with 3D beveled modular tiles.",
+  "minEngineVersion": "1.0.0"
+}

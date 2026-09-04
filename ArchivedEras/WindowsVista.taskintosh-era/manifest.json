@@ -1,0 +1,9 @@
+{
+  "id": "org.taskintosh.era.windowsvista",
+  "name": "Windows Vista Aero",
+  "version": "1.0.0",
+  "author": "Taskintosh Project",
+  "eraPeriod": "2006-2009",
+  "description": "Translucent dark Aero glass taskbar, circular glass 3D Start Orb, and glowing plate buttons.",
+  "minEngineVersion": "1.0.0"
+}

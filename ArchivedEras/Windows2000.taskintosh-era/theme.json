@@ -1,0 +1,20 @@
+{
+  "backgroundColorHex": "#D4D0C8",
+  "surfaceColorHex": "#D4D0C8",
+  "lightHighlightColorHex": "#FFFFFF",
+  "shadowColorHex": "#808080",
+  "darkShadowColorHex": "#000000",
+  "textColorHex": "#000000",
+  "activeTextColorHex": "#000000",
+  "bannerStartColorHex": "#000080",
+  "bannerEndColorHex": "#4169E1",
+  "accentColorHex": "#000080",
+  "bevelStyle": "classic3D",
+  "ditherActiveButton": false,
+  "fontSize": 11,
+  "fontName": null,
+  "startButtonText": "Start",
+  "bannerText": "Taskintosh 2000 Pro",
+  "startButtonStyle": "classicRect",
+  "startMenuType": "classicOneColumn"
+}

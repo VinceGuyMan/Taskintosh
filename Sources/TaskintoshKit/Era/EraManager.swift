@@ -101,6 +101,11 @@ public final class EraManager: ObservableObject {
         UserDefaults.standard.set(id, forKey: activeEraKey)
     }
 
+    /// Selects and activates an Era by package.
+    public func selectEra(_ era: EraPackage) {
+        selectEra(id: era.manifest.id)
+    }
+
     /// Imports an `.taskintosh-era` folder or archive into user storage.
     public func importEra(from sourceURL: URL) throws -> EraPackage {
         let destName = sourceURL.lastPathComponent

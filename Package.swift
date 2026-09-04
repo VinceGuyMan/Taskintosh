@@ -8,26 +8,36 @@ let package = Package(
     ],
     products: [
         .executable(name: "Taskintosh", targets: ["Taskintosh"]),
-        .library(name: "TaskintoshKit", targets: ["TaskintoshKit"])
+        .library(name: "TaskintoshKit", targets: ["TaskintoshKit"]),
+        .library(name: "ProceduralWindowsUpdate", targets: ["ProceduralWindowsUpdate"])
     ],
     dependencies: [],
     targets: [
+        .target(
+            name: "ProceduralWindowsUpdate",
+            dependencies: [],
+            path: "ProceduralWindowsUpdate/Sources/ProceduralWindowsUpdate"
+        ),
         .target(
             name: "TaskintoshKit",
             dependencies: [],
             path: "Sources/TaskintoshKit",
             resources: [
-                .copy("Resources/Eras")
+                .copy("Resources/Eras"),
+                .copy("Resources/Brand")
             ]
         ),
         .executableTarget(
             name: "Taskintosh",
-            dependencies: ["TaskintoshKit"],
-            path: "Sources/Taskintosh"
+            dependencies: ["TaskintoshKit", "ProceduralWindowsUpdate"],
+            path: "Sources/Taskintosh",
+            resources: [
+                .process("Resources")
+            ]
         ),
         .testTarget(
             name: "TaskintoshTests",
-            dependencies: ["TaskintoshKit"],
+            dependencies: ["TaskintoshKit", "ProceduralWindowsUpdate"],
             path: "Tests/TaskintoshTests"
         )
     ]

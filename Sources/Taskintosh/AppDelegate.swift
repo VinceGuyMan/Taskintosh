@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import TaskintoshKit
+import ProceduralWindowsUpdate
 
 public final class AppDelegate: NSObject, NSApplicationDelegate {
     public static private(set) weak var shared: AppDelegate?
@@ -18,12 +19,22 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         autoHideController?.isEnabled ?? false
     }
 
+    public var currentTaskbarView: TaskbarView? {
+        return taskbarView
+    }
+
     override public init() {
         super.init()
         AppDelegate.shared = self
     }
 
     public func applicationDidFinishLaunching(_ notification: Notification) {
+        // 0. Set Application Icon
+        if let iconUrl = Bundle.main.url(forResource: "AppIcon", withExtension: "icns") ?? Bundle.main.url(forResource: "taskintosh-icon-128", withExtension: "png"),
+           let appIcon = NSImage(contentsOf: iconUrl) {
+            NSApplication.shared.applicationIconImage = appIcon
+        }
+
         // 1. Initialize Engine & Catalog
         _ = RunningAppWatcher.shared
         _ = AppCatalog.shared
@@ -93,17 +104,21 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     private func setupStatusItem() {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = item.button {
-            button.image = ProceduralIcons.shared.taskintoshIcon(size: 16)
-            button.toolTip = "Taskintosh: The wrong taskbar for the right computer"
+            button.image = ProceduralIcons.shared.taskintoshTemplateIcon(size: 16)
+            button.toolTip = "Taskintosh: Desktop history, openly rebuilt for Mac."
         }
 
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Taskintosh 95", action: nil, keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Taskintosh — Desktop history, openly rebuilt for Mac.", action: nil, keyEquivalent: ""))
         menu.addItem(NSMenuItem.separator())
 
         let eraManagerItem = NSMenuItem(title: "Era Manager & Properties...", action: #selector(openEraManager), keyEquivalent: "e")
         eraManagerItem.target = self
         menu.addItem(eraManagerItem)
+
+        let updateItem = NSMenuItem(title: "Windows Update...", action: #selector(openWindowsUpdate), keyEquivalent: "u")
+        updateItem.target = self
+        menu.addItem(updateItem)
 
         let toggleTaskbarItem = NSMenuItem(title: "Toggle Taskbar Visibility", action: #selector(toggleTaskbar), keyEquivalent: "t")
         toggleTaskbarItem.target = self
@@ -123,6 +138,11 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         self.statusItem = item
     }
 
+    @MainActor @objc public func openWindowsUpdate() {
+        let activeEraID = EraManager.shared.activeEra.manifest.id
+        FakeUpdateSystem.present(taskintoshEraID: activeEraID, duration: .normal, personality: .authentic)
+    }
+
     @objc public func openEraManager() {
         if eraManagerWindow == nil {
             eraManagerWindow = EraManagerWindow()
@@ -139,6 +159,16 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
     }
 
+    private var goToPathDialog: GoToPathDialog?
+
+    @objc public func openGoToPathDialog() {
+        if goToPathDialog == nil {
+            goToPathDialog = GoToPathDialog()
+        }
+        goToPathDialog?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
     @objc public func openShutDownDialog() {
         if shutDownDialog == nil {
             shutDownDialog = ShutDownDialog()
@@ -147,10 +177,21 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
     }
 
+    @objc public func openFindDialog() {
+        Win95FindDialog.shared.showDialog()
+    }
+
     @objc public func openHelp() {
         let alert = NSAlert()
-        alert.messageText = "Taskintosh Help"
-        alert.informativeText = "Taskintosh is a native macOS desktop-history playground.\n\n• Click Start to open applications, run commands, or shut down.\n• Click running taskbar buttons to switch to applications or minimize them.\n• Right-click the taskbar to open Activity Monitor, toggle auto-hide, or configure Eras.\n• Right-click a task button to restore, minimize, or close an app."
+        alert.messageText = "Taskintosh"
+        alert.informativeText = """
+Desktop history, openly rebuilt for Mac.
+
+• Click Start to open applications, system folders, or shut down.
+• Click running taskbar buttons to switch to applications or minimize them.
+• Right-click the taskbar to open Activity Monitor, toggle auto-hide, or configure Eras.
+• Right-click a task button to restore, minimize, or close an app.
+"""
         alert.runModal()
     }
 

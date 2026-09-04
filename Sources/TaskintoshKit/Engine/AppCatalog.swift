@@ -59,6 +59,18 @@ public final class AppCatalog: ObservableObject {
         }
     }
 
+    public func ensureLoadedSynchronously() {
+        if installedApps.isEmpty {
+            let apps = self.scanAllDirectories()
+            self.installedApps = apps.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+            var catMap: [String: [CatalogApp]] = [:]
+            for app in self.installedApps {
+                catMap[app.category, default: []].append(app)
+            }
+            self.categories = catMap
+        }
+    }
+
     private func scanAllDirectories() -> [CatalogApp] {
         var results: [CatalogApp] = []
         var seenPaths = Set<String>()

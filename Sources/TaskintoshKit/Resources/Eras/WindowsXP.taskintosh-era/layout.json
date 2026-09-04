@@ -1,0 +1,18 @@
+{
+  "defaultEdge": "bottom",
+  "taskbarHeight": 30,
+  "itemSpacing": 3,
+  "paddingHorizontal": 2,
+  "paddingVertical": 2,
+  "startButtonWidth": 96,
+  "startButtonHeight": 26,
+  "taskButtonMinWidth": 140,
+  "taskButtonMaxWidth": 180,
+  "trayPadding": 4,
+  "taskbarStyle": "classic",
+  "buttonStyle": "standard",
+  "alignment": "leading",
+  "cornerRadius": 4,
+  "quickLaunchEnabled": false,
+  "overflowStrategy": "grouping"
+}

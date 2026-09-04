@@ -1,0 +1,16 @@
+{
+  "defaultEdge": "top",
+  "taskbarHeight": 20,
+  "itemSpacing": 3,
+  "paddingHorizontal": 2,
+  "paddingVertical": 1,
+  "startButtonWidth": 120,
+  "startButtonHeight": 18,
+  "taskButtonMinWidth": 36,
+  "taskButtonMaxWidth": 140,
+  "trayPadding": 2,
+  "taskbarStyle": "topMenuBar",
+  "buttonStyle": "standard",
+  "alignment": "leading",
+  "showDesktopButton": "amigaGadget"
+}

@@ -4,9 +4,13 @@
   "itemSpacing": 2,
   "paddingHorizontal": 2,
   "paddingVertical": 2,
-  "startButtonWidth": 54,
+  "startButtonWidth": 56,
   "startButtonHeight": 22,
-  "taskButtonMinWidth": 40,
+  "taskButtonMinWidth": 130,
   "taskButtonMaxWidth": 160,
-  "trayPadding": 3
+  "trayPadding": 3,
+  "taskbarStyle": "classic",
+  "buttonStyle": "standard",
+  "alignment": "leading",
+  "overflowStrategy": "scrollButtons"
 }

@@ -1,0 +1,9 @@
+{
+  "id": "org.taskintosh.era.windows8",
+  "name": "Windows 8.1",
+  "version": "1.0.0",
+  "author": "Taskintosh Project",
+  "eraPeriod": "2012-2015",
+  "description": "Flat modern aesthetic with crisp sharp tiles and vibrant color accent underlines.",
+  "minEngineVersion": "1.0.0"
+}

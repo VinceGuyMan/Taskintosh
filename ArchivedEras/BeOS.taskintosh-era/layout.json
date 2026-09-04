@@ -1,0 +1,15 @@
+{
+  "defaultEdge": "top",
+  "taskbarHeight": 32,
+  "itemSpacing": 3,
+  "paddingHorizontal": 4,
+  "paddingVertical": 2,
+  "startButtonWidth": 52,
+  "startButtonHeight": 26,
+  "taskButtonMinWidth": 40,
+  "taskButtonMaxWidth": 150,
+  "trayPadding": 4,
+  "taskbarStyle": "deskbar",
+  "buttonStyle": "standard",
+  "alignment": "leading"
+}

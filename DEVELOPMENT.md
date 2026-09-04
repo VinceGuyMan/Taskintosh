@@ -33,7 +33,7 @@ swift build
 ```bash
 ./scripts/package-app.sh
 ```
-This script compiles the release binary, creates `build/Taskintosh.app`, writes the `Info.plist` (configuring `LSUIElement` so Taskintosh runs as an accessory without cluttering the macOS Dock), and bundles the default Era packs.
+This script compiles the release binary, creates `build/Taskintosh.app`, writes the `Info.plist` (configuring `LSUIElement` so Taskintosh runs as an accessory without cluttering the macOS Dock), and bundles the six supported Era packs. Experimental packs in `ArchivedEras/` are not packaged.
 
 ---
 

@@ -1,0 +1,9 @@
+{
+  "id": "org.taskintosh.era.windowsme",
+  "name": "Windows Millennium",
+  "version": "1.0.0",
+  "author": "Taskintosh Project",
+  "eraPeriod": "2000",
+  "description": "Millennium edition desktop theme with softer palettes and Quick Launch.",
+  "minEngineVersion": "1.0.0"
+}

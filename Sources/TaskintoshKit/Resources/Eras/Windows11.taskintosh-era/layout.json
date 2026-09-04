@@ -1,0 +1,18 @@
+{
+  "defaultEdge": "bottom",
+  "taskbarHeight": 48,
+  "itemSpacing": 6,
+  "paddingHorizontal": 6,
+  "paddingVertical": 4,
+  "startButtonWidth": 44,
+  "startButtonHeight": 40,
+  "taskButtonMinWidth": 40,
+  "taskButtonMaxWidth": 40,
+  "trayPadding": 6,
+  "taskbarStyle": "centered",
+  "buttonStyle": "pill",
+  "alignment": "center",
+  "cornerRadius": 8,
+  "showDesktopButton": "farRightPeek",
+  "overflowStrategy": "iconOnly"
+}

@@ -8,11 +8,15 @@
   "activeTextColorHex": "#000000",
   "bannerStartColorHex": "#000080",
   "bannerEndColorHex": "#1084D0",
-  "accentColorHex": "#000080",
+  "accentColorHex": "#008000",
   "bevelStyle": "classic3D",
   "ditherActiveButton": true,
   "fontSize": 11,
   "fontName": null,
   "startButtonText": "Start",
-  "bannerText": "Taskintosh 95"
+  "bannerText": "Windows 95",
+  "translucencyStyle": "opaque",
+  "accentIndicatorStyle": "sunken",
+  "startButtonStyle": "classicGreen",
+  "startMenuType": "classicOneColumn"
 }

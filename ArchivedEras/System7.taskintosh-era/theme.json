@@ -1,0 +1,22 @@
+{
+  "backgroundColorHex": "#DDDDDD",
+  "surfaceColorHex": "#EEEEEE",
+  "lightHighlightColorHex": "#FFFFFF",
+  "shadowColorHex": "#999999",
+  "darkShadowColorHex": "#000000",
+  "textColorHex": "#000000",
+  "activeTextColorHex": "#000000",
+  "bannerStartColorHex": "#333333",
+  "bannerEndColorHex": "#666666",
+  "accentColorHex": "#000000",
+  "bevelStyle": "flat",
+  "ditherActiveButton": false,
+  "fontSize": 10,
+  "fontName": null,
+  "startButtonText": "",
+  "bannerText": "System 7",
+  "translucencyStyle": "opaque",
+  "accentIndicatorStyle": "macCheckmark",
+  "startButtonStyle": "appleMenu",
+  "startMenuType": "appleDropdown"
+}

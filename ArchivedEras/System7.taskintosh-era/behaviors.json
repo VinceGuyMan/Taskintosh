@@ -1,0 +1,8 @@
+{
+  "autoHideSupported": false,
+  "autoHideDelaySeconds": 0.5,
+  "autoHidePeekMargin": 2.0,
+  "clickActiveAppAction": "none",
+  "windowGrouping": "none",
+  "soundEffectsEnabled": false
+}

@@ -1,0 +1,22 @@
+{
+  "backgroundColorHex": "#4A4A4A",
+  "surfaceColorHex": "#5A5A5A",
+  "lightHighlightColorHex": "#7E7E7E",
+  "shadowColorHex": "#2D2D2D",
+  "darkShadowColorHex": "#000000",
+  "textColorHex": "#FFFFFF",
+  "activeTextColorHex": "#FFFFFF",
+  "bannerStartColorHex": "#1A1A1A",
+  "bannerEndColorHex": "#333333",
+  "accentColorHex": "#000000",
+  "bevelStyle": "classic3D",
+  "ditherActiveButton": false,
+  "fontSize": 10,
+  "fontName": null,
+  "startButtonText": "NeXT",
+  "bannerText": "NeXTSTEP",
+  "translucencyStyle": "opaque",
+  "accentIndicatorStyle": "tileBevel",
+  "startButtonStyle": "nextIcon",
+  "startMenuType": "nextShelfMenu"
+}

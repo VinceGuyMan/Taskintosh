@@ -1,0 +1,15 @@
+{
+  "defaultEdge": "right",
+  "taskbarHeight": 64,
+  "itemSpacing": 4,
+  "paddingHorizontal": 2,
+  "paddingVertical": 2,
+  "startButtonWidth": 60,
+  "startButtonHeight": 60,
+  "taskButtonMinWidth": 56,
+  "taskButtonMaxWidth": 56,
+  "trayPadding": 4,
+  "taskbarStyle": "verticalShelf",
+  "buttonStyle": "tile",
+  "alignment": "leading"
+}

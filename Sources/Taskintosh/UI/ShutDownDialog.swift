@@ -1,5 +1,6 @@
-import AppKit
 import TaskintoshKit
+import AppKit
+
 
 public final class ShutDownDialog: NSWindow {
     private var selectedOption: Int = 0 // 0: Shutdown, 1: Restart, 2: Log Off
