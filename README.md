@@ -152,5 +152,5 @@ TaskinTosh/
 Taskintosh is released under the [MIT License](LICENSE). It is an original, clean-room recreation and does **not** contain or redistribute any proprietary Microsoft artwork, copyrighted trademarks, commercial sound files, or binary extracts. See [LEGAL-ASSET-NOTES.md](LEGAL-ASSET-NOTES.md) for full compliance details.
 
 <p align="center">
-  <img src="Assets/GitHub/readme-hero-light.png" width="836" alt="Taskintosh — Desktop history, openly rebuilt for Mac.">
+  <img src="Assets/GitHub/lockup-dark-transparent.png" width="836" alt="Taskintosh">
 </p>
