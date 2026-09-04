@@ -2,7 +2,17 @@
 set -e
 
 echo "==> Building Taskintosh (Release)..."
-swift build -c release
+swift build -c release --arch arm64
+swift build -c release --arch x86_64
+
+UNIVERSAL_RELEASE_DIR=".build/universal-macosx/release"
+mkdir -p "$UNIVERSAL_RELEASE_DIR"
+lipo -create \
+    ".build/arm64-apple-macosx/release/Taskintosh" \
+    ".build/x86_64-apple-macosx/release/Taskintosh" \
+    -output "$UNIVERSAL_RELEASE_DIR/Taskintosh"
+echo "==> Universal executable:"
+lipo -info "$UNIVERSAL_RELEASE_DIR/Taskintosh"
 
 APP_DIR="build/Taskintosh.app"
 MACOS_DIR="$APP_DIR/Contents/MacOS"
@@ -13,8 +23,8 @@ rm -rf "$APP_DIR"
 mkdir -p "$MACOS_DIR"
 mkdir -p "$RESOURCES_DIR/Eras"
 
-# Copy binary
-cp .build/release/Taskintosh "$MACOS_DIR/Taskintosh"
+# Copy universal binary
+cp "$UNIVERSAL_RELEASE_DIR/Taskintosh" "$MACOS_DIR/Taskintosh"
 
 # Copy Era packages
 cp -R Sources/TaskintoshKit/Resources/Eras/* "$RESOURCES_DIR/Eras/"
