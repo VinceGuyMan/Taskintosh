@@ -5,6 +5,7 @@ import AppKit
 public final class AutoHideController {
     public private(set) var isEnabled: Bool = false
     public private(set) var isHidden: Bool = false
+    public var visibilityDidChange: ((Bool, NSRect) -> Void)?
 
     private weak var panel: TaskbarPanel?
     private var globalEventMonitor: Any?
@@ -110,6 +111,7 @@ public final class AutoHideController {
         } else {
             panel.setFrame(hiddenFrame, display: true)
         }
+        visibilityDidChange?(false, hiddenFrame)
     }
 
     public func revealPanel(animated: Bool) {
@@ -136,5 +138,6 @@ public final class AutoHideController {
         } else {
             panel.setFrame(visibleFrame, display: true)
         }
+        visibilityDidChange?(true, visibleFrame)
     }
 }

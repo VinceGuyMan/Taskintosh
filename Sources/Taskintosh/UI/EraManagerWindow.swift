@@ -144,10 +144,10 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
     public func updateAccessibilityStatus() {
         let trusted = WindowAccessibilityBridge.shared.isAccessibilityTrusted
         if trusted {
-            accessibilityStatusLabel.stringValue = "Accessibility: Enabled (Window-level tracking active)"
+            accessibilityStatusLabel.stringValue = "Accessibility: Enabled (automatic taskbar window layout active)"
             accessibilityStatusLabel.textColor = .systemGreen
         } else {
-            accessibilityStatusLabel.stringValue = "Accessibility: Disabled (App-level mode active, zero permissions needed)"
+            accessibilityStatusLabel.stringValue = "Accessibility: Enable for automatic window layout around the taskbar"
             accessibilityStatusLabel.textColor = .secondaryLabelColor
         }
     }

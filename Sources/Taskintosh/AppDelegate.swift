@@ -9,6 +9,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     private var taskbarPanel: TaskbarPanel?
     private var taskbarView: TaskbarView?
     private var autoHideController: AutoHideController?
+    private var taskbarWindowLayoutCoordinator: TaskbarWindowLayoutCoordinator?
     private var statusItem: NSStatusItem?
     private var eraManagerWindow: EraManagerWindow?
     private var runDialog: RunDialog?
@@ -83,8 +84,14 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let autoHide = AutoHideController(panel: panel)
         self.autoHideController = autoHide
+        let windowLayoutCoordinator = TaskbarWindowLayoutCoordinator()
+        self.taskbarWindowLayoutCoordinator = windowLayoutCoordinator
+        autoHide.visibilityDidChange = { [weak self] isVisible, frame in
+            self?.updateTaskbarWindowLayout(frame: frame, isVisible: isVisible)
+        }
 
         panel.orderFront(nil)
+        updateTaskbarWindowLayout(frame: panel.frame, isVisible: true)
     }
 
     private func applyEra(_ era: EraPackage) {
@@ -92,6 +99,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         let screen = DisplayManager.shared.currentScreen
         panel.updateGeometry(era: era, screen: screen)
         taskbarView?.needsDisplay = true
+        updateTaskbarWindowLayout(frame: panel.frame, isVisible: true)
     }
 
     public func refreshTaskbarGeometry() {
@@ -99,6 +107,27 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         let screen = DisplayManager.shared.currentScreen
         let era = EraManager.shared.activeEra
         panel.updateGeometry(era: era, screen: screen)
+        updateTaskbarWindowLayout(frame: panel.frame, isVisible: true)
+    }
+
+    private func updateTaskbarWindowLayout(frame: CGRect, isVisible: Bool) {
+        let taskbarIsVisible = isVisible &&
+            (taskbarPanel?.isVisible ?? false) &&
+            !(autoHideController?.isHidden ?? false)
+        taskbarWindowLayoutCoordinator?.update(
+            taskbarFrame: frame,
+            edge: EraManager.shared.activeEra.layout.defaultEdge,
+            screens: NSScreen.screens,
+            isActive: taskbarIsVisible
+        )
+    }
+
+    public func applicationWillTerminate(_ notification: Notification) {
+        taskbarWindowLayoutCoordinator?.releaseReservedSpace()
+    }
+
+    public func applicationDidBecomeActive(_ notification: Notification) {
+        eraManagerWindow?.updateAccessibilityStatus()
     }
 
     private func setupStatusItem() {
@@ -199,8 +228,10 @@ Desktop history, openly rebuilt for Mac.
         guard let panel = taskbarPanel else { return }
         if panel.isVisible {
             panel.orderOut(nil)
+            updateTaskbarWindowLayout(frame: panel.frame, isVisible: false)
         } else {
             panel.orderFront(nil)
+            updateTaskbarWindowLayout(frame: panel.frame, isVisible: true)
         }
     }
 
