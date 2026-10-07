@@ -353,22 +353,20 @@ public final class SystemMonitor: ObservableObject {
             self.isMuted = false
         }
         DispatchQueue.global(qos: .userInitiated).async {
-            let script = "set volume output volume \(clamped)"
-            if let appleScript = NSAppleScript(source: script) {
-                var error: NSDictionary?
-                _ = appleScript.executeAndReturnError(&error)
-            }
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
+            process.arguments = ["-e", "set volume output volume \(clamped)"]
+            try? process.run()
         }
     }
 
     public func setMuted(_ muted: Bool) {
         self.isMuted = muted
         DispatchQueue.global(qos: .userInitiated).async {
-            let script = "set volume output muted \(muted ? "true" : "false")"
-            if let appleScript = NSAppleScript(source: script) {
-                var error: NSDictionary?
-                _ = appleScript.executeAndReturnError(&error)
-            }
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
+            process.arguments = ["-e", "set volume output muted \(muted ? "true" : "false")"]
+            try? process.run()
         }
     }
 

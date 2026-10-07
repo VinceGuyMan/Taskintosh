@@ -46,6 +46,10 @@ public final class TaskbarContextMenu: NSMenu {
         let propertiesItem = NSMenuItem(title: "Properties & Era Manager...", action: #selector(TaskbarView.openEraManagerClicked), keyEquivalent: "")
         propertiesItem.target = target
         addItem(propertiesItem)
+
+        let a11yItem = NSMenuItem(title: "Accessibility & Window Layout...", action: #selector(TaskbarView.openAccessibilityClicked), keyEquivalent: "")
+        a11yItem.target = target
+        addItem(a11yItem)
     }
 
     required init(coder: NSCoder) {

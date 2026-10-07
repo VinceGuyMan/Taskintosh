@@ -2,6 +2,13 @@ import TaskintoshKit
 import AppKit
 
 
+private final class TopUpdateIconButton: NSButton {
+    override func resetCursorRects() {
+        super.resetCursorRects()
+        addCursorRect(bounds, cursor: .pointingHand)
+    }
+}
+
 public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableViewDelegate {
     private let tableView = NSTableView()
     private let nameLabel = NSTextField(labelWithString: "")
@@ -11,6 +18,13 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
     private let descLabel = NSTextField(labelWithString: "")
     private let activateButton = NSButton()
     private let accessibilityStatusLabel = NSTextField(labelWithString: "")
+    private let soundToggleButton = NSButton()
+    private let previewSoundButton = NSButton()
+
+    // Top update icon & status
+    private let updateIconButton = TopUpdateIconButton()
+    private let updateStatusLabel = NSTextField(labelWithString: "")
+    private let updateSpinner = NSProgressIndicator()
 
     public init() {
         let rect = NSRect(x: 0, y: 0, width: 560, height: 440)
@@ -30,16 +44,50 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
 
         // Header Title
         let header = NSTextField(labelWithString: "Desktop History & Era Packs")
-        header.frame = NSRect(x: 20, y: 398, width: 400, height: 24)
+        header.frame = NSRect(x: 20, y: 398, width: 300, height: 24)
         header.font = NSFont.boldSystemFont(ofSize: 15)
         contentView.addSubview(header)
 
         // Subtitle
         let subheader = NSTextField(labelWithString: "“Desktop history, openly rebuilt for Mac.”")
-        subheader.frame = NSRect(x: 20, y: 378, width: 400, height: 18)
+        subheader.frame = NSRect(x: 20, y: 378, width: 300, height: 18)
         subheader.font = NSFont.systemFont(ofSize: 11)
         subheader.textColor = .secondaryLabelColor
         contentView.addSubview(subheader)
+
+        // Top Icon for Updates
+        let appIcon = loadAppIcon(size: 44)
+        updateIconButton.frame = NSRect(x: 488, y: 372, width: 52, height: 52)
+        updateIconButton.image = appIcon
+        updateIconButton.imagePosition = .imageOnly
+        updateIconButton.imageScaling = .scaleProportionallyUpOrDown
+        updateIconButton.isBordered = false
+        updateIconButton.wantsLayer = true
+        updateIconButton.layer?.cornerRadius = 10
+        updateIconButton.layer?.masksToBounds = true
+        updateIconButton.layer?.borderWidth = 1
+        updateIconButton.layer?.borderColor = NSColor.separatorColor.cgColor
+        updateIconButton.layer?.backgroundColor = NSColor.controlBackgroundColor.cgColor
+        updateIconButton.toolTip = "Click to update Taskintosh & relaunch"
+        updateIconButton.target = self
+        updateIconButton.action = #selector(topIconUpdateClicked)
+        updateIconButton.setAccessibilityIdentifier("TopUpdateIconButton")
+        contentView.addSubview(updateIconButton)
+
+        // Update status label & spinner
+        updateStatusLabel.frame = NSRect(x: 260, y: 398, width: 220, height: 18)
+        updateStatusLabel.alignment = .right
+        updateStatusLabel.font = NSFont.systemFont(ofSize: 10, weight: .medium)
+        updateStatusLabel.textColor = .secondaryLabelColor
+        updateStatusLabel.stringValue = "v\(AppUpdateService.shared.currentAppVersion()) • Click icon to update"
+        updateStatusLabel.setAccessibilityIdentifier("TopUpdateStatusLabel")
+        contentView.addSubview(updateStatusLabel)
+
+        updateSpinner.frame = NSRect(x: 464, y: 378, width: 16, height: 16)
+        updateSpinner.style = .spinning
+        updateSpinner.controlSize = .small
+        updateSpinner.isDisplayedWhenStopped = false
+        contentView.addSubview(updateSpinner)
 
         // Table scroll view on left
         let scroll = NSScrollView(frame: NSRect(x: 20, y: 130, width: 220, height: 240))
@@ -65,6 +113,7 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
         detailBox.contentView?.addSubview(authorLabel)
         detailBox.contentView?.addSubview(descLabel)
         detailBox.contentView?.addSubview(activateButton)
+        detailBox.contentView?.addSubview(previewSoundButton)
 
         nameLabel.frame = NSRect(x: 12, y: 180, width: 260, height: 20)
         nameLabel.font = NSFont.boldSystemFont(ofSize: 13)
@@ -83,28 +132,69 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
         descLabel.font = NSFont.systemFont(ofSize: 11)
         descLabel.lineBreakMode = .byWordWrapping
 
-        activateButton.frame = NSRect(x: 12, y: 10, width: 120, height: 26)
+        activateButton.frame = NSRect(x: 12, y: 10, width: 115, height: 26)
         activateButton.title = "Activate Era"
         activateButton.bezelStyle = .rounded
         activateButton.target = self
         activateButton.action = #selector(activateClicked)
 
+        previewSoundButton.frame = NSRect(x: 135, y: 10, width: 125, height: 26)
+        previewSoundButton.title = "▶ Preview Sound"
+        previewSoundButton.bezelStyle = .rounded
+        previewSoundButton.target = self
+        previewSoundButton.action = #selector(previewSoundClicked)
+        previewSoundButton.setAccessibilityIdentifier("PreviewEraSoundButton")
+
         contentView.addSubview(detailBox)
 
         // Buttons below table
-        let importButton = NSButton(frame: NSRect(x: 20, y: 92, width: 110, height: 26))
-        importButton.title = "Import Era..."
+        let importButton = NSButton(frame: NSRect(x: 20, y: 92, width: 84, height: 26))
+        importButton.title = "Import..."
         importButton.bezelStyle = .rounded
         importButton.target = self
         importButton.action = #selector(importClicked)
         contentView.addSubview(importButton)
 
-        let reloadButton = NSButton(frame: NSRect(x: 135, y: 92, width: 105, height: 26))
-        reloadButton.title = "Reload Eras"
+        let reloadButton = NSButton(frame: NSRect(x: 108, y: 92, width: 78, height: 26))
+        reloadButton.title = "Reload"
         reloadButton.bezelStyle = .rounded
         reloadButton.target = self
         reloadButton.action = #selector(reloadClicked)
         contentView.addSubview(reloadButton)
+
+        soundToggleButton.frame = NSRect(x: 190, y: 92, width: 88, height: 26)
+        soundToggleButton.bezelStyle = .rounded
+        updateSoundButtonTitle()
+        soundToggleButton.target = self
+        soundToggleButton.action = #selector(soundToggleClicked)
+        soundToggleButton.setAccessibilityIdentifier("EraSoundToggleButton")
+        contentView.addSubview(soundToggleButton)
+
+        // Generation Transition Effect Selector
+        let transitionLabel = NSTextField(labelWithString: "Transition:")
+        transitionLabel.frame = NSRect(x: 284, y: 95, width: 62, height: 18)
+        transitionLabel.font = NSFont.systemFont(ofSize: 11, weight: .medium)
+        transitionLabel.textColor = .secondaryLabelColor
+        contentView.addSubview(transitionLabel)
+
+        let transitionPopup = NSPopUpButton(frame: NSRect(x: 348, y: 90, width: 192, height: 26), pullsDown: false)
+        for effect in TaskbarTransitionEffect.allCases {
+            transitionPopup.addItem(withTitle: effect.displayName)
+            transitionPopup.lastItem?.representedObject = effect.rawValue
+        }
+        transitionPopup.addItem(withTitle: "Random (Cycle Each Switch)")
+        transitionPopup.lastItem?.representedObject = "random"
+
+        if TaskbarTransitionEffect.isCycleMode {
+            transitionPopup.selectItem(withTitle: "Random (Cycle Each Switch)")
+        } else {
+            transitionPopup.selectItem(withTitle: TaskbarTransitionEffect.preferredEffect.displayName)
+        }
+
+        transitionPopup.target = self
+        transitionPopup.action = #selector(transitionEffectChanged(_:))
+        transitionPopup.setAccessibilityIdentifier("TransitionEffectPopup")
+        contentView.addSubview(transitionPopup)
 
         // Bottom section: System Integrations & Helpers
         let helperBox = NSBox(frame: NSRect(x: 20, y: 12, width: 520, height: 74))
@@ -240,6 +330,125 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
     }
 
     @objc private func a11yClicked() {
+        WindowAccessibilityBridge.shared.promptForAccessibility()
         WindowAccessibilityBridge.shared.openAccessibilitySettings()
     }
+
+    @objc private func transitionEffectChanged(_ sender: NSPopUpButton) {
+        guard let raw = sender.selectedItem?.representedObject as? String else { return }
+        if raw == "random" {
+            TaskbarTransitionEffect.isCycleMode = true
+        } else if let effect = TaskbarTransitionEffect(rawValue: raw) {
+            TaskbarTransitionEffect.isCycleMode = false
+            TaskbarTransitionEffect.preferredEffect = effect
+        }
+    }
+
+    @objc private func previewSoundClicked() {
+        let row = tableView.selectedRow >= 0 ? tableView.selectedRow : 0
+        let eras = EraManager.shared.availableEras
+        guard row < eras.count else { return }
+        let era = eras[row]
+        EraSoundManager.shared.playStartupSound(for: era, ignoreMute: true)
+    }
+
+    @objc private func soundToggleClicked() {
+        EraSoundManager.shared.isSoundEnabled.toggle()
+        updateSoundButtonTitle()
+        if EraSoundManager.shared.isSoundEnabled {
+            let row = tableView.selectedRow >= 0 ? tableView.selectedRow : 0
+            let eras = EraManager.shared.availableEras
+            if row < eras.count {
+                EraSoundManager.shared.playStartupSound(for: eras[row])
+            }
+        }
+    }
+
+    private func updateSoundButtonTitle() {
+        let enabled = EraSoundManager.shared.isSoundEnabled
+        soundToggleButton.title = enabled ? "🔊 Sound" : "🔇 Muted"
+        soundToggleButton.toolTip = enabled ? "Startup sound plays on era change (click to mute)" : "Startup sound is muted (click to enable)"
+    }
+
+    private func loadAppIcon(size: CGFloat) -> NSImage {
+        if let iconUrl = Bundle.main.url(forResource: "AppIcon", withExtension: "icns") ?? Bundle.main.url(forResource: "taskintosh-icon-128", withExtension: "png"),
+           let img = NSImage(contentsOf: iconUrl) {
+            let resized = NSImage(size: NSSize(width: size, height: size))
+            resized.lockFocus()
+            img.draw(in: NSRect(x: 0, y: 0, width: size, height: size), from: .zero, operation: .sourceOver, fraction: 1.0)
+            resized.unlockFocus()
+            return resized
+        }
+        return ProceduralIcons.shared.taskintoshIcon(size: size)
+    }
+
+    @objc public func topIconUpdateClicked() {
+        startUpdateFlow(forceReinstall: false)
+    }
+
+    public func startUpdateFlow(forceReinstall: Bool = false) {
+        updateStatusLabel.stringValue = "Checking for updates..."
+        updateStatusLabel.textColor = .labelColor
+        updateSpinner.startAnimation(nil)
+        updateIconButton.isEnabled = false
+
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            let result = await AppUpdateService.shared.checkAndApplyUpdate(forceReinstall: forceReinstall)
+            self.updateSpinner.stopAnimation(nil)
+            self.updateIconButton.isEnabled = true
+
+            switch result {
+            case .updatedAndRelaunching:
+                self.updateStatusLabel.stringValue = "Restarting Taskintosh..."
+                self.updateStatusLabel.textColor = .systemGreen
+
+            case .fallbackToGitHub(let url, let reason):
+                self.updateStatusLabel.stringValue = "Opened GitHub"
+                self.updateStatusLabel.textColor = .systemOrange
+                let alert = NSAlert()
+                alert.messageText = "Update via GitHub"
+                alert.informativeText = "\(reason)\n\nTaskintosh has opened the GitHub releases page in your browser."
+                alert.alertStyle = .informational
+                alert.addButton(withTitle: "OK")
+                alert.addButton(withTitle: "Re-open GitHub")
+                if alert.runModal() == .alertSecondButtonReturn {
+                    NSWorkspace.shared.open(url)
+                }
+
+            case .alreadyUpToDate(let version, let hasPackageAsset):
+                self.updateStatusLabel.stringValue = "v\(version) (Up to date)"
+                self.updateStatusLabel.textColor = .secondaryLabelColor
+                let alert = NSAlert()
+                alert.messageText = "Taskintosh is Up to Date"
+                alert.informativeText = "You are currently running version \(version)."
+                alert.alertStyle = .informational
+                alert.addButton(withTitle: "OK")
+                alert.addButton(withTitle: "Visit GitHub")
+                if hasPackageAsset {
+                    alert.addButton(withTitle: "Reinstall")
+                }
+                let response = alert.runModal()
+                if response == .alertSecondButtonReturn {
+                    NSWorkspace.shared.open(AppUpdateConfig.standard.gitHubReleasesWebURL)
+                } else if response == .alertThirdButtonReturn {
+                    self.startUpdateFlow(forceReinstall: true)
+                }
+
+            case .failed(let message):
+                self.updateStatusLabel.stringValue = "Check failed"
+                self.updateStatusLabel.textColor = .systemRed
+                let alert = NSAlert()
+                alert.messageText = "Update Check Failed"
+                alert.informativeText = "\(message)\n\nOpening the GitHub releases page..."
+                alert.alertStyle = .warning
+                alert.addButton(withTitle: "Open GitHub")
+                alert.addButton(withTitle: "Cancel")
+                if alert.runModal() == .alertFirstButtonReturn {
+                    NSWorkspace.shared.open(AppUpdateConfig.standard.gitHubReleasesWebURL)
+                }
+            }
+        }
+    }
 }
+

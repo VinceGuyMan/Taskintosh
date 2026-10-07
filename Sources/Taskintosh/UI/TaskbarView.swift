@@ -31,6 +31,44 @@ public final class TaskbarView: NSView {
     private var activeTrayControl: TrayControl?
     private var trackingArea: NSTrackingArea?
 
+    // Era Generation Transition State
+    public struct TaskbarTransition {
+        public let oldImage: NSImage
+        public let oldBounds: NSRect
+        public let effect: TaskbarTransitionEffect
+        public var progress: CGFloat
+        public let startTime: Date
+        public let duration: TimeInterval
+
+        public init(
+            oldImage: NSImage,
+            oldBounds: NSRect,
+            effect: TaskbarTransitionEffect,
+            progress: CGFloat,
+            startTime: Date = Date(),
+            duration: TimeInterval = 0.38
+        ) {
+            self.oldImage = oldImage
+            self.oldBounds = oldBounds
+            self.effect = effect
+            self.progress = progress
+            self.startTime = startTime
+            self.duration = duration
+        }
+    }
+
+    private var currentTransition: TaskbarTransition?
+    private var transitionTimer: Timer?
+    private var isCapturingSnapshot: Bool = false
+
+    public var activeTransition: TaskbarTransition? {
+        return currentTransition
+    }
+
+    public func setTransitionForTesting(_ transition: TaskbarTransition?) {
+        self.currentTransition = transition
+    }
+
     override public init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         setupSubscriptions()
@@ -170,6 +208,10 @@ public final class TaskbarView: NSView {
 
     @objc public func openEraManagerClicked() {
         AppDelegate.shared?.openEraManager()
+    }
+
+    @objc public func openAccessibilityClicked() {
+        AppDelegate.shared?.openAccessibilitySettings()
     }
 
     @objc public func setTaskbarSizePresetClicked(_ sender: NSMenuItem) {
@@ -347,48 +389,61 @@ public final class TaskbarView: NSView {
         super.draw(dirtyRect)
 
         let era = EraManager.shared.activeEra
+        drawTaskbarComponents(in: bounds, era: era, isSnapshot: false)
+
+        if let transition = currentTransition, !isCapturingSnapshot {
+            drawTransition(transition, in: dirtyRect)
+        }
+    }
+
+    private func drawTaskbarComponents(in targetBounds: NSRect, era: EraPackage, isSnapshot: Bool) {
         let theme = era.theme
         let layout = era.layout
 
         // 1. Draw Taskbar Background
-        drawBackground(theme: theme, layout: layout)
+        drawBackground(theme: theme, layout: layout, in: targetBounds)
 
         if layout.taskbarStyle == .verticalShelf {
-            drawVerticalShelf(theme: theme, layout: layout, era: era)
+            drawVerticalShelf(theme: theme, layout: layout, era: era, in: targetBounds, isSnapshot: isSnapshot)
             return
         }
 
-        let btnH: CGFloat = max(18, bounds.height - 6)
+        let btnH: CGFloat = max(18, targetBounds.height - 6)
 
         // 2. Compute Aero Peek / Show Desktop slice if configured
         var rightMargin: CGFloat = 4
         if layout.showDesktopButton == .farRightPeek {
             let peekW: CGFloat = 12
-            aeroPeekRect = NSRect(x: bounds.width - peekW - 1, y: 1, width: peekW, height: bounds.height - 2)
-            drawAeroPeek(in: aeroPeekRect, theme: theme)
-            showDesktopSliceRect = .zero
+            let r = NSRect(x: targetBounds.width - peekW - 1, y: 1, width: peekW, height: targetBounds.height - 2)
+            if !isSnapshot { aeroPeekRect = r; showDesktopSliceRect = .zero }
+            drawAeroPeek(in: r, theme: theme)
             rightMargin = peekW + 4
         } else if theme.startMenuType == .tileLauncher || theme.startMenuType == .modernTiles || theme.startMenuType == .hybridMenu || theme.startMenuType == .centeredFlyout {
             let sliceW: CGFloat = 5
-            showDesktopSliceRect = NSRect(x: bounds.width - sliceW, y: 1, width: sliceW, height: bounds.height - 2)
-            drawShowDesktopSlice(in: showDesktopSliceRect, theme: theme)
-            aeroPeekRect = .zero
+            let r = NSRect(x: targetBounds.width - sliceW, y: 1, width: sliceW, height: targetBounds.height - 2)
+            if !isSnapshot { showDesktopSliceRect = r; aeroPeekRect = .zero }
+            drawShowDesktopSlice(in: r, theme: theme)
             rightMargin = sliceW + 4
         } else {
-            aeroPeekRect = .zero
-            showDesktopSliceRect = .zero
+            if !isSnapshot {
+                aeroPeekRect = .zero
+                showDesktopSliceRect = .zero
+            }
         }
 
         // 3. Draw System Tray on the right
         let trayW: CGFloat = computeTrayWidth(era: era)
-        trayRect = NSRect(x: bounds.width - trayW - rightMargin, y: 3, width: trayW, height: btnH)
-        drawSystemTray(in: trayRect, era: era)
+        let computedTrayRect = NSRect(x: targetBounds.width - trayW - rightMargin, y: 3, width: trayW, height: btnH)
+        if !isSnapshot { trayRect = computedTrayRect }
+        drawSystemTray(in: computedTrayRect, era: era)
 
         // 4. Draw Start Button & Running Task Buttons
         let items = RunningAppWatcher.shared.taskItems
-        taskButtonRects.removeAll()
-        quickLaunchRects.removeAll()
-        let tasksEndX = trayRect.minX - 6
+        if !isSnapshot {
+            taskButtonRects.removeAll()
+            quickLaunchRects.removeAll()
+        }
+        let tasksEndX = computedTrayRect.minX - 6
 
         if layout.alignment == .center {
             // Windows 11: Start Button is part of the centered cluster
@@ -397,12 +452,13 @@ public final class TaskbarView: NSView {
             let startW = layout.startButtonWidth
             let tasksCount = CGFloat(items.count)
             let totalClusterWidth = startW + (tasksCount > 0 ? spacing : 0) + tasksCount * buttonSize + CGFloat(max(0, items.count - 1)) * spacing
-            let clusterStartX = max(layout.paddingHorizontal + 2, bounds.midX - totalClusterWidth / 2.0)
+            let clusterStartX = max(layout.paddingHorizontal + 2, targetBounds.midX - totalClusterWidth / 2.0)
 
-            startButtonRect = NSRect(x: clusterStartX, y: (bounds.height - btnH) / 2.0, width: startW, height: btnH)
-            drawStartButton(in: startButtonRect, era: era)
+            let computedStartRect = NSRect(x: clusterStartX, y: (targetBounds.height - btnH) / 2.0, width: startW, height: btnH)
+            if !isSnapshot { startButtonRect = computedStartRect }
+            drawStartButton(in: computedStartRect, era: era)
 
-            let tasksStartX = startButtonRect.maxX + spacing
+            let tasksStartX = computedStartRect.maxX + spacing
             if !items.isEmpty {
                 drawCenteredTaskButtons(items: items, startX: tasksStartX, endX: tasksEndX, btnH: btnH, era: era)
             }
@@ -410,10 +466,11 @@ public final class TaskbarView: NSView {
             // Left-aligned eras (Windows 95, XP, 7, 8, 10)
             let startW = layout.startButtonWidth
             let startX = layout.paddingHorizontal + 2
-            startButtonRect = NSRect(x: startX, y: (bounds.height - btnH) / 2.0, width: startW, height: btnH)
-            drawStartButton(in: startButtonRect, era: era)
+            let computedStartRect = NSRect(x: startX, y: (targetBounds.height - btnH) / 2.0, width: startW, height: btnH)
+            if !isSnapshot { startButtonRect = computedStartRect }
+            drawStartButton(in: computedStartRect, era: era)
 
-            var tasksStartX = startButtonRect.maxX + 6
+            var tasksStartX = computedStartRect.maxX + 6
             if layout.quickLaunchEnabled {
                 tasksStartX = drawQuickLaunch(startingAt: tasksStartX, height: btnH, theme: theme)
             }
@@ -425,7 +482,7 @@ public final class TaskbarView: NSView {
         }
     }
 
-    private func drawBackground(theme: EraVisualTheme, layout: EraLayoutConfig) {
+    private func drawBackground(theme: EraVisualTheme, layout: EraLayoutConfig, in targetBounds: NSRect) {
         guard let context = NSGraphicsContext.current?.cgContext else { return }
 
         switch theme.translucencyStyle {
@@ -437,52 +494,291 @@ public final class TaskbarView: NSView {
             ] as CFArray
             let colorSpace = CGColorSpaceCreateDeviceRGB()
             if let gradient = CGGradient(colorsSpace: colorSpace, colors: bgColors, locations: [0.0, 1.0]) {
-                context.drawLinearGradient(gradient, start: CGPoint(x: 0, y: bounds.maxY), end: CGPoint(x: 0, y: bounds.minY), options: [])
+                context.drawLinearGradient(gradient, start: CGPoint(x: 0, y: targetBounds.maxY), end: CGPoint(x: 0, y: targetBounds.minY), options: [])
             }
             // Specular glass highlight line at top
             NSColor.white.withAlphaComponent(0.35).setFill()
-            NSRect(x: 0, y: bounds.height - 1, width: bounds.width, height: 1).fill()
+            NSRect(x: 0, y: targetBounds.height - 1, width: targetBounds.width, height: 1).fill()
 
         case .acrylic, .mica:
             theme.backgroundColor.withAlphaComponent(0.88).setFill()
-            bounds.fill()
+            targetBounds.fill()
             NSColor.white.withAlphaComponent(0.08).setFill()
-            NSRect(x: 0, y: bounds.height - 1, width: bounds.width, height: 1).fill()
+            NSRect(x: 0, y: targetBounds.height - 1, width: targetBounds.width, height: 1).fill()
 
         case .opaque:
             theme.backgroundColor.setFill()
-            bounds.fill()
+            targetBounds.fill()
             if theme.bevelStyle == .classic3D {
                 theme.lightHighlightColor.setFill()
-                NSRect(x: 0, y: bounds.height - 1, width: bounds.width, height: 1).fill()
+                NSRect(x: 0, y: targetBounds.height - 1, width: targetBounds.width, height: 1).fill()
             }
         }
     }
 
-    private func drawVerticalShelf(theme: EraVisualTheme, layout: EraLayoutConfig, era: EraPackage) {
+    private func drawVerticalShelf(theme: EraVisualTheme, layout: EraLayoutConfig, era: EraPackage, in targetBounds: NSRect, isSnapshot: Bool) {
         // 1. Top Start / Shelf Tile
-        let topSize: CGFloat = min(bounds.width - 4, 60)
-        startButtonRect = NSRect(x: 2, y: bounds.height - topSize - 2, width: topSize, height: topSize)
-        drawStartButton(in: startButtonRect, era: era)
+        let topSize: CGFloat = min(targetBounds.width - 4, 60)
+        let computedStartRect = NSRect(x: 2, y: targetBounds.height - topSize - 2, width: topSize, height: topSize)
+        if !isSnapshot { startButtonRect = computedStartRect }
+        drawStartButton(in: computedStartRect, era: era)
 
         // 2. Running Application Tiles
         let items = RunningAppWatcher.shared.taskItems
-        taskButtonRects.removeAll()
-        let tileSize: CGFloat = min(bounds.width - 4, 56)
+        if !isSnapshot { taskButtonRects.removeAll() }
+        let tileSize: CGFloat = min(targetBounds.width - 4, 56)
         let spacing: CGFloat = 4
 
         for (index, item) in items.enumerated() {
-            let y = startButtonRect.minY - spacing - CGFloat(index + 1) * (tileSize + spacing) + spacing
+            let y = computedStartRect.minY - spacing - CGFloat(index + 1) * (tileSize + spacing) + spacing
             if y < 50 { break }
 
             let itemRect = NSRect(x: 2, y: y, width: tileSize, height: tileSize)
-            taskButtonRects.append((item, itemRect))
+            if !isSnapshot { taskButtonRects.append((item, itemRect)) }
             renderTaskButton(item: item, in: itemRect, era: era)
         }
 
         // 3. Bottom Clock / System Tile
-        trayRect = NSRect(x: 2, y: 4, width: bounds.width - 4, height: 44)
-        drawSystemTray(in: trayRect, era: era)
+        let computedTrayRect = NSRect(x: 2, y: 4, width: targetBounds.width - 4, height: 44)
+        if !isSnapshot { trayRect = computedTrayRect }
+        drawSystemTray(in: computedTrayRect, era: era)
+    }
+
+    // MARK: - Era Generation Transitions Engine
+
+    /// Captures a rendered snapshot of the specified era at the requested dimensions.
+    public func captureSnapshot(for era: EraPackage, size: NSSize) -> NSImage {
+        let img = NSImage(size: size)
+        img.lockFocus()
+        if let ctx = NSGraphicsContext.current {
+            ctx.imageInterpolation = .high
+        }
+        let renderRect = NSRect(origin: .zero, size: size)
+        isCapturingSnapshot = true
+        drawTaskbarComponents(in: renderRect, era: era, isSnapshot: true)
+        isCapturingSnapshot = false
+        img.unlockFocus()
+        return img
+    }
+
+    /// Smoothly transitions from oldEra to newEra using the active transition effect.
+    public func startEraTransition(
+        from oldEra: EraPackage,
+        to newEra: EraPackage,
+        screen: NSScreen,
+        panel: TaskbarPanel,
+        effect: TaskbarTransitionEffect? = nil,
+        duration: TimeInterval = 0.38
+    ) {
+        transitionTimer?.invalidate()
+        transitionTimer = nil
+
+        let oldHeight = oldEra.layout.taskbarHeight
+        let oldWidth = max(100, bounds.width)
+        let oldSize = NSSize(width: oldWidth, height: oldHeight)
+        let snapshot = captureSnapshot(for: oldEra, size: oldSize)
+        let oldBounds = NSRect(origin: .zero, size: oldSize)
+
+        let chosenEffect = effect ?? TaskbarTransitionEffect.preferredEffect
+
+        panel.updateGeometry(era: newEra, screen: screen, animated: true, duration: duration)
+
+        let startTime = Date()
+        currentTransition = TaskbarTransition(
+            oldImage: snapshot,
+            oldBounds: oldBounds,
+            effect: chosenEffect,
+            progress: 0.0,
+            startTime: startTime,
+            duration: duration
+        )
+        self.needsDisplay = true
+
+        let timer = Timer(timeInterval: 1.0 / 60.0, repeats: true) { [weak self] t in
+            guard let self = self else {
+                t.invalidate()
+                return
+            }
+            let elapsed = Date().timeIntervalSince(startTime)
+            let rawProgress = min(1.0, CGFloat(elapsed / duration))
+            let progress = self.easeInOutCubic(rawProgress)
+
+            if rawProgress >= 1.0 {
+                t.invalidate()
+                self.transitionTimer = nil
+                self.currentTransition = nil
+                self.needsDisplay = true
+            } else {
+                self.currentTransition?.progress = progress
+                self.needsDisplay = true
+            }
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        self.transitionTimer = timer
+    }
+
+    private func easeInOutCubic(_ t: CGFloat) -> CGFloat {
+        return t < 0.5 ? 4.0 * t * t * t : 1.0 - pow(-2.0 * t + 2.0, 3.0) / 2.0
+    }
+
+    private func drawTransition(_ transition: TaskbarTransition, in dirtyRect: NSRect) {
+        let progress = transition.progress
+        guard progress < 1.0 else { return }
+
+        switch transition.effect {
+        case .crossfade:
+            let alpha = 1.0 - progress
+            if alpha > 0 {
+                transition.oldImage.draw(
+                    in: transition.oldBounds,
+                    from: .zero,
+                    operation: .sourceOver,
+                    fraction: alpha
+                )
+            }
+
+        case .slidePush:
+            let slideDown = progress * transition.oldBounds.height
+            let oldDrawRect = NSRect(
+                x: 0,
+                y: -slideDown,
+                width: transition.oldBounds.width,
+                height: transition.oldBounds.height
+            )
+            let alpha = max(0, 1.0 - (progress * 0.6))
+            transition.oldImage.draw(
+                in: oldDrawRect,
+                from: .zero,
+                operation: .sourceOver,
+                fraction: alpha
+            )
+
+            // Sleek seam illumination
+            let seamY = bounds.height * (1.0 - progress)
+            NSColor.white.withAlphaComponent(0.4 * (1.0 - progress)).setFill()
+            NSRect(x: 0, y: seamY - 1, width: bounds.width, height: 2).fill()
+
+        case .curtainWipe:
+            guard let context = NSGraphicsContext.current?.cgContext else { return }
+            let wipeX = bounds.width * progress
+
+            context.saveGState()
+            let clipRect = NSRect(x: wipeX, y: 0, width: max(0, bounds.width - wipeX), height: bounds.height)
+            context.clip(to: clipRect)
+            transition.oldImage.draw(
+                in: transition.oldBounds,
+                from: .zero,
+                operation: .sourceOver,
+                fraction: 1.0
+            )
+            context.restoreGState()
+
+            // Glowing scanline beam along the wipe boundary
+            if progress > 0.01 && progress < 0.99 {
+                let beamWidth: CGFloat = 6.0
+                let beamRect = NSRect(x: wipeX - beamWidth / 2.0, y: 0, width: beamWidth, height: bounds.height)
+                let colors = [
+                    NSColor.cyan.withAlphaComponent(0.0).cgColor,
+                    NSColor.cyan.withAlphaComponent(0.85).cgColor,
+                    NSColor.white.withAlphaComponent(1.0).cgColor,
+                    NSColor.cyan.withAlphaComponent(0.85).cgColor,
+                    NSColor.cyan.withAlphaComponent(0.0).cgColor
+                ] as CFArray
+                if let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0.0, 0.25, 0.5, 0.75, 1.0]) {
+                    context.drawLinearGradient(gradient, start: CGPoint(x: beamRect.minX, y: 0), end: CGPoint(x: beamRect.maxX, y: 0), options: [])
+                }
+            }
+
+        case .crtMorph:
+            let midY = bounds.midY
+            if progress < 0.45 {
+                let scale = 1.0 - (progress / 0.45)
+                let h = max(2.0, transition.oldBounds.height * scale)
+                let y = midY - h / 2.0
+                let rect = NSRect(x: 0, y: y, width: bounds.width, height: h)
+                transition.oldImage.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1.0)
+
+                let glowAlpha = (progress / 0.45) * 0.7
+                NSColor.white.withAlphaComponent(glowAlpha).setFill()
+                NSRect(x: 0, y: midY - 1, width: bounds.width, height: 2).fill()
+            } else if progress < 0.55 {
+                let flashAlpha = max(0, 1.0 - abs(progress - 0.5) * 10.0)
+                NSColor.white.withAlphaComponent(flashAlpha * 0.85).setFill()
+                bounds.fill()
+                NSColor.cyan.withAlphaComponent(0.9).setFill()
+                NSRect(x: 0, y: midY - 2, width: bounds.width, height: 4).fill()
+            } else {
+                let expandProgress = (progress - 0.55) / 0.45
+                let revealHeight = bounds.height * expandProgress
+                let maskHeight = (bounds.height - revealHeight) / 2.0
+                if maskHeight > 0 {
+                    NSColor.black.withAlphaComponent(1.0 - expandProgress * 0.7).setFill()
+                    NSRect(x: 0, y: 0, width: bounds.width, height: maskHeight).fill()
+                    NSRect(x: 0, y: bounds.height - maskHeight, width: bounds.width, height: maskHeight).fill()
+                }
+                let beamAlpha = (1.0 - expandProgress) * 0.6
+                NSColor.white.withAlphaComponent(beamAlpha).setFill()
+                NSRect(x: 0, y: midY - 1, width: bounds.width, height: 2).fill()
+            }
+
+        case .glassBloom:
+            let alpha = 1.0 - progress
+            if alpha > 0 {
+                transition.oldImage.draw(
+                    in: transition.oldBounds,
+                    from: .zero,
+                    operation: .sourceOver,
+                    fraction: alpha
+                )
+            }
+            let bloomIntensity = sin(progress * .pi)
+            if bloomIntensity > 0 {
+                NSColor.white.withAlphaComponent(bloomIntensity * 0.35).setFill()
+                bounds.fill()
+                let lusterRect = NSRect(x: 0, y: bounds.height * 0.5, width: bounds.width, height: bounds.height * 0.5)
+                NSColor.white.withAlphaComponent(bloomIntensity * 0.25).setFill()
+                lusterRect.fill()
+            }
+
+        case .timeWarp:
+            guard let context = NSGraphicsContext.current?.cgContext else { return }
+            let blockWidth: CGFloat = 24.0
+            let numBlocks = Int(ceil(bounds.width / blockWidth))
+            let alpha = 1.0 - progress
+
+            context.saveGState()
+            let clipPath = CGMutablePath()
+            for i in 0..<numBlocks {
+                let hash = CGFloat((abs(sin(Double(i * 123 + 456))) * 10000.0).truncatingRemainder(dividingBy: 1.0))
+                if hash > progress {
+                    let rect = CGRect(x: CGFloat(i) * blockWidth, y: 0, width: blockWidth, height: bounds.height)
+                    clipPath.addRect(rect)
+                }
+            }
+            context.addPath(clipPath)
+            context.clip()
+            transition.oldImage.draw(
+                in: transition.oldBounds,
+                from: .zero,
+                operation: .sourceOver,
+                fraction: alpha
+            )
+            context.restoreGState()
+
+            if progress < 0.85 {
+                let lineSpacing: CGFloat = 4.0
+                NSColor.cyan.withAlphaComponent(0.12 * (1.0 - progress)).setStroke()
+                let p = NSBezierPath()
+                p.lineWidth = 1.0
+                var y: CGFloat = 0
+                while y < bounds.height {
+                    p.move(to: NSPoint(x: 0, y: y))
+                    p.line(to: NSPoint(x: bounds.width, y: y))
+                    y += lineSpacing
+                }
+                p.stroke()
+            }
+        }
     }
 
     private func drawStartButton(in rect: NSRect, era: EraPackage) {

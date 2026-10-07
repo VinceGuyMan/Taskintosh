@@ -30,7 +30,7 @@ public final class TaskbarPanel: NSPanel {
     }
 
     /// Updates the panel's geometry to match the active era and screen configuration.
-    public func updateGeometry(era: EraPackage, screen: NSScreen, preset: TaskbarSizePreset? = nil) {
+    public func updateGeometry(era: EraPackage, screen: NSScreen, preset: TaskbarSizePreset? = nil, animated: Bool = false, duration: TimeInterval = 0.38) {
         let sizePreset: TaskbarSizePreset
         if let p = preset {
             sizePreset = p
@@ -47,6 +47,18 @@ public final class TaskbarPanel: NSPanel {
             height: height,
             on: screen
         )
-        self.setFrame(targetFrame, display: true, animate: false)
+
+        if animated && self.frame != targetFrame {
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = duration
+                context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                self.animator().setFrame(targetFrame, display: true)
+            }, completionHandler: {
+                AppDelegate.shared?.updateTaskbarWindowLayout(frame: targetFrame, isVisible: true)
+            })
+        } else {
+            self.setFrame(targetFrame, display: true, animate: false)
+            AppDelegate.shared?.updateTaskbarWindowLayout(frame: targetFrame, isVisible: true)
+        }
     }
 }

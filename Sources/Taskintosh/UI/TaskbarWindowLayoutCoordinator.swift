@@ -20,6 +20,8 @@ final class TaskbarWindowLayoutCoordinator {
     private var isActive = false
     private var workspaceObservers: [NSObjectProtocol] = []
 
+    private var periodicTimer: Timer?
+
     init() {
         let center = NSWorkspace.shared.notificationCenter
         for name in [
@@ -38,11 +40,22 @@ final class TaskbarWindowLayoutCoordinator {
                 }
             })
         }
+
+        let timer = Timer(timeInterval: 1.5, repeats: true) { [weak self] _ in
+            self?.adjustNewWindowsIfNeeded()
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        self.periodicTimer = timer
     }
 
     deinit {
+        periodicTimer?.invalidate()
         let center = NSWorkspace.shared.notificationCenter
         workspaceObservers.forEach { center.removeObserver($0) }
+    }
+
+    public func checkAndAdjustWindows() {
+        adjustNewWindowsIfNeeded()
     }
 
     func update(taskbarFrame: CGRect, edge: TaskbarEdge, screens: [NSScreen], isActive: Bool) {
@@ -94,26 +107,41 @@ final class TaskbarWindowLayoutCoordinator {
                   let windows = windowsValue as? [AXUIElement] else { continue }
 
             for window in windows {
-                guard !isAlreadyManaged(window),
-                      isVisibleWindow(window),
-                      let originalFrame = readFrame(of: window),
-                      let adjustedFrame = adjustedFrame(
-                        originalFrame,
+                guard isVisibleWindow(window),
+                      let currentFrame = readFrame(of: window),
+                      let targetFrame = adjustedFrame(
+                        currentFrame,
                         taskbarFrame: taskbarFrame,
                         edge: edge,
                         screens: screens
                       ),
-                      adjustedFrame != originalFrame,
-                      setFrame(adjustedFrame, of: window) else { continue }
+                      !approximatelyEqual(targetFrame, currentFrame) else { continue }
 
-                let appliedFrame = readFrame(of: window) ?? adjustedFrame
-                guard !approximatelyEqual(appliedFrame, originalFrame) else { continue }
-
-                adjustments.append(WindowAdjustment(
-                    element: window,
-                    originalFrame: originalFrame,
-                    adjustedFrame: appliedFrame
-                ))
+                if let existingIndex = adjustments.firstIndex(where: { CFEqual($0.element, window) }) {
+                    let oldAdj = adjustments[existingIndex]
+                    if approximatelyEqual(currentFrame, targetFrame) {
+                        continue
+                    }
+                    if setFrame(targetFrame, of: window) {
+                        let applied = readFrame(of: window) ?? targetFrame
+                        adjustments[existingIndex] = WindowAdjustment(
+                            element: window,
+                            originalFrame: oldAdj.originalFrame,
+                            adjustedFrame: applied
+                        )
+                    }
+                } else {
+                    if setFrame(targetFrame, of: window) {
+                        let applied = readFrame(of: window) ?? targetFrame
+                        if !approximatelyEqual(applied, currentFrame) {
+                            adjustments.append(WindowAdjustment(
+                                element: window,
+                                originalFrame: currentFrame,
+                                adjustedFrame: applied
+                            ))
+                        }
+                    }
+                }
             }
         }
     }
@@ -129,23 +157,25 @@ final class TaskbarWindowLayoutCoordinator {
 
         for screen in screens {
             let screenAXFrame = accessibilityFrame(screen.frame, mainScreenTop: mainScreenTop)
+            let visibleAXFrame = accessibilityFrame(screen.visibleFrame, mainScreenTop: mainScreenTop)
             let reservedFrame = taskbarAXFrame.intersection(screenAXFrame)
-            guard !reservedFrame.isNull, windowFrame.intersects(reservedFrame) else { continue }
+            guard !reservedFrame.isNull, !reservedFrame.isEmpty, windowFrame.intersects(reservedFrame) else { continue }
 
-            var workArea = screenAXFrame
+            var workArea = visibleAXFrame
             switch edge {
             case .bottom:
-                workArea.size.height = max(0, reservedFrame.minY - screenAXFrame.minY)
+                workArea.origin.y = visibleAXFrame.minY
+                workArea.size.height = max(0, min(visibleAXFrame.maxY, reservedFrame.minY) - visibleAXFrame.minY)
             case .top:
-                let newMinY = reservedFrame.maxY
-                workArea.size.height = max(0, screenAXFrame.maxY - newMinY)
+                let newMinY = max(visibleAXFrame.minY, reservedFrame.maxY)
+                workArea.size.height = max(0, visibleAXFrame.maxY - newMinY)
                 workArea.origin.y = newMinY
             case .left:
-                let newMinX = reservedFrame.maxX
-                workArea.size.width = max(0, screenAXFrame.maxX - newMinX)
+                let newMinX = max(visibleAXFrame.minX, reservedFrame.maxX)
+                workArea.size.width = max(0, visibleAXFrame.maxX - newMinX)
                 workArea.origin.x = newMinX
             case .right:
-                workArea.size.width = max(0, reservedFrame.minX - screenAXFrame.minX)
+                workArea.size.width = max(0, min(visibleAXFrame.maxX, reservedFrame.minX) - visibleAXFrame.minX)
             }
 
             guard workArea.width > 0, workArea.height > 0 else { return nil }
@@ -189,6 +219,13 @@ final class TaskbarWindowLayoutCoordinator {
         if AXUIElementCopyAttributeValue(window, kAXRoleAttribute as CFString, &roleValue) == .success,
            let role = roleValue as? String,
            role != (kAXWindowRole as String) {
+            return false
+        }
+
+        var titleValue: AnyObject?
+        if AXUIElementCopyAttributeValue(window, kAXTitleAttribute as CFString, &titleValue) == .success,
+           let title = titleValue as? String,
+           title == "Desktop" {
             return false
         }
 
@@ -259,50 +296,27 @@ final class TaskbarWindowLayoutCoordinator {
     private func setFrame(_ frame: CGRect, of element: AXUIElement) -> Bool {
         guard let previousFrame = readFrame(of: element) else { return false }
 
+        var anySuccess = false
+
         let sizeChanged = abs(frame.width - previousFrame.width) > 0.5 || abs(frame.height - previousFrame.height) > 0.5
         if sizeChanged {
             var size = frame.size
-            guard let sizeValue = AXValueCreate(.cgSize, &size),
-                  AXUIElementSetAttributeValue(element, kAXSizeAttribute as CFString, sizeValue) == .success else {
-                return false
+            if let sizeValue = AXValueCreate(.cgSize, &size),
+               AXUIElementSetAttributeValue(element, kAXSizeAttribute as CFString, sizeValue) == .success {
+                anySuccess = true
             }
         }
 
         let positionChanged = abs(frame.minX - previousFrame.minX) > 0.5 || abs(frame.minY - previousFrame.minY) > 0.5
         if positionChanged {
             var position = frame.origin
-            guard let positionValue = AXValueCreate(.cgPoint, &position),
-                  AXUIElementSetAttributeValue(element, kAXPositionAttribute as CFString, positionValue) == .success else {
-                if sizeChanged {
-                    _ = setFrameValues(previousFrame, of: element)
-                }
-                return false
-            }
-        }
-        return true
-    }
-
-    private func setFrameValues(_ frame: CGRect, of element: AXUIElement) -> Bool {
-        guard let previousFrame = readFrame(of: element) else { return false }
-
-        let sizeChanged = abs(frame.width - previousFrame.width) > 0.5 || abs(frame.height - previousFrame.height) > 0.5
-        if sizeChanged {
-            var size = frame.size
-            guard let sizeValue = AXValueCreate(.cgSize, &size),
-                  AXUIElementSetAttributeValue(element, kAXSizeAttribute as CFString, sizeValue) == .success else {
-                return false
+            if let positionValue = AXValueCreate(.cgPoint, &position),
+               AXUIElementSetAttributeValue(element, kAXPositionAttribute as CFString, positionValue) == .success {
+                anySuccess = true
             }
         }
 
-        let positionChanged = abs(frame.minX - previousFrame.minX) > 0.5 || abs(frame.minY - previousFrame.minY) > 0.5
-        if positionChanged {
-            var position = frame.origin
-            guard let positionValue = AXValueCreate(.cgPoint, &position),
-                  AXUIElementSetAttributeValue(element, kAXPositionAttribute as CFString, positionValue) == .success else {
-                return false
-            }
-        }
-        return true
+        return anySuccess
     }
 
     private func accessibilityFrame(_ frame: CGRect, mainScreenTop: CGFloat) -> CGRect {

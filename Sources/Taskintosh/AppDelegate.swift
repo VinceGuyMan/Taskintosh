@@ -91,14 +91,27 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         panel.orderFront(nil)
+        self.currentEra = era
         updateTaskbarWindowLayout(frame: panel.frame, isVisible: true)
     }
+
+    private var currentEra: EraPackage?
 
     private func applyEra(_ era: EraPackage) {
         guard let panel = taskbarPanel else { return }
         let screen = DisplayManager.shared.currentScreen
-        panel.updateGeometry(era: era, screen: screen)
-        taskbarView?.needsDisplay = true
+        let previous = currentEra
+        currentEra = era
+
+        if let oldEra = previous, oldEra.manifest.id != era.manifest.id, let view = taskbarView {
+            view.startEraTransition(from: oldEra, to: era, screen: screen, panel: panel)
+            Task { @MainActor in
+                EraSoundManager.shared.playStartupSound(for: era)
+            }
+        } else {
+            panel.updateGeometry(era: era, screen: screen)
+            taskbarView?.needsDisplay = true
+        }
         updateTaskbarWindowLayout(frame: panel.frame, isVisible: true)
     }
 
@@ -110,7 +123,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         updateTaskbarWindowLayout(frame: panel.frame, isVisible: true)
     }
 
-    private func updateTaskbarWindowLayout(frame: CGRect, isVisible: Bool) {
+    public func updateTaskbarWindowLayout(frame: CGRect, isVisible: Bool) {
         let taskbarIsVisible = isVisible &&
             (taskbarPanel?.isVisible ?? false) &&
             !(autoHideController?.isHidden ?? false)
@@ -128,6 +141,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
     public func applicationDidBecomeActive(_ notification: Notification) {
         eraManagerWindow?.updateAccessibilityStatus()
+        taskbarWindowLayoutCoordinator?.checkAndAdjustWindows()
     }
 
     private func setupStatusItem() {
@@ -145,6 +159,10 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         eraManagerItem.target = self
         menu.addItem(eraManagerItem)
 
+        let checkUpdateItem = NSMenuItem(title: "Check for Updates...", action: #selector(checkForAppUpdates), keyEquivalent: "")
+        checkUpdateItem.target = self
+        menu.addItem(checkUpdateItem)
+
         let updateItem = NSMenuItem(title: "Windows Update...", action: #selector(openWindowsUpdate), keyEquivalent: "u")
         updateItem.target = self
         menu.addItem(updateItem)
@@ -157,6 +175,10 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         toggleAutoHideItem.target = self
         menu.addItem(toggleAutoHideItem)
 
+        let a11yItem = NSMenuItem(title: "Accessibility & Window Layout...", action: #selector(openAccessibilitySettings), keyEquivalent: "")
+        a11yItem.target = self
+        menu.addItem(a11yItem)
+
         menu.addItem(NSMenuItem.separator())
 
         let quitItem = NSMenuItem(title: "Quit Taskintosh", action: #selector(quitClicked), keyEquivalent: "q")
@@ -165,6 +187,11 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
         item.menu = menu
         self.statusItem = item
+    }
+
+    @objc public func checkForAppUpdates() {
+        openEraManager()
+        eraManagerWindow?.topIconUpdateClicked()
     }
 
     @MainActor @objc public func openWindowsUpdate() {
@@ -237,6 +264,11 @@ Desktop history, openly rebuilt for Mac.
 
     @objc public func toggleAutoHide() {
         autoHideController?.toggle()
+    }
+
+    @objc public func openAccessibilitySettings() {
+        WindowAccessibilityBridge.shared.promptForAccessibility()
+        WindowAccessibilityBridge.shared.openAccessibilitySettings()
     }
 
     @objc private func quitClicked() {
