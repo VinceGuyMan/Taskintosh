@@ -27,7 +27,7 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
     private let updateSpinner = NSProgressIndicator()
 
     public init() {
-        let rect = NSRect(x: 0, y: 0, width: 560, height: 440)
+        let rect = NSRect(x: 0, y: 0, width: 570, height: 470)
         super.init(
             contentRect: rect,
             styleMask: [.titled, .closable, .miniaturizable],
@@ -44,20 +44,20 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
 
         // Header Title
         let header = NSTextField(labelWithString: "Desktop History & Era Packs")
-        header.frame = NSRect(x: 20, y: 398, width: 300, height: 24)
+        header.frame = NSRect(x: 20, y: 426, width: 300, height: 24)
         header.font = NSFont.boldSystemFont(ofSize: 15)
         contentView.addSubview(header)
 
         // Subtitle
         let subheader = NSTextField(labelWithString: "“Desktop history, openly rebuilt for Mac.”")
-        subheader.frame = NSRect(x: 20, y: 378, width: 300, height: 18)
+        subheader.frame = NSRect(x: 20, y: 406, width: 300, height: 18)
         subheader.font = NSFont.systemFont(ofSize: 11)
         subheader.textColor = .secondaryLabelColor
         contentView.addSubview(subheader)
 
         // Top Icon for Updates
         let appIcon = loadAppIcon(size: 44)
-        updateIconButton.frame = NSRect(x: 488, y: 372, width: 52, height: 52)
+        updateIconButton.frame = NSRect(x: 498, y: 400, width: 52, height: 52)
         updateIconButton.image = appIcon
         updateIconButton.imagePosition = .imageOnly
         updateIconButton.imageScaling = .scaleProportionallyUpOrDown
@@ -75,7 +75,7 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
         contentView.addSubview(updateIconButton)
 
         // Update status label & spinner
-        updateStatusLabel.frame = NSRect(x: 260, y: 398, width: 220, height: 18)
+        updateStatusLabel.frame = NSRect(x: 270, y: 426, width: 220, height: 18)
         updateStatusLabel.alignment = .right
         updateStatusLabel.font = NSFont.systemFont(ofSize: 10, weight: .medium)
         updateStatusLabel.textColor = .secondaryLabelColor
@@ -83,14 +83,14 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
         updateStatusLabel.setAccessibilityIdentifier("TopUpdateStatusLabel")
         contentView.addSubview(updateStatusLabel)
 
-        updateSpinner.frame = NSRect(x: 464, y: 378, width: 16, height: 16)
+        updateSpinner.frame = NSRect(x: 474, y: 406, width: 16, height: 16)
         updateSpinner.style = .spinning
         updateSpinner.controlSize = .small
         updateSpinner.isDisplayedWhenStopped = false
         contentView.addSubview(updateSpinner)
 
         // Table scroll view on left
-        let scroll = NSScrollView(frame: NSRect(x: 20, y: 130, width: 220, height: 240))
+        let scroll = NSScrollView(frame: NSRect(x: 20, y: 154, width: 224, height: 240))
         scroll.hasVerticalScroller = true
         scroll.borderType = .bezelBorder
 
@@ -105,7 +105,7 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
         contentView.addSubview(scroll)
 
         // Details on right
-        let detailBox = NSBox(frame: NSRect(x: 250, y: 130, width: 290, height: 240))
+        let detailBox = NSBox(frame: NSRect(x: 254, y: 154, width: 296, height: 240))
         detailBox.title = "Era Information"
         detailBox.contentView?.addSubview(nameLabel)
         detailBox.contentView?.addSubview(periodLabel)
@@ -148,21 +148,21 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
         contentView.addSubview(detailBox)
 
         // Buttons below table
-        let importButton = NSButton(frame: NSRect(x: 20, y: 92, width: 84, height: 26))
+        let importButton = NSButton(frame: NSRect(x: 20, y: 114, width: 80, height: 26))
         importButton.title = "Import..."
         importButton.bezelStyle = .rounded
         importButton.target = self
         importButton.action = #selector(importClicked)
         contentView.addSubview(importButton)
 
-        let reloadButton = NSButton(frame: NSRect(x: 108, y: 92, width: 78, height: 26))
+        let reloadButton = NSButton(frame: NSRect(x: 104, y: 114, width: 76, height: 26))
         reloadButton.title = "Reload"
         reloadButton.bezelStyle = .rounded
         reloadButton.target = self
         reloadButton.action = #selector(reloadClicked)
         contentView.addSubview(reloadButton)
 
-        soundToggleButton.frame = NSRect(x: 190, y: 92, width: 88, height: 26)
+        soundToggleButton.frame = NSRect(x: 184, y: 114, width: 88, height: 26)
         soundToggleButton.bezelStyle = .rounded
         updateSoundButtonTitle()
         soundToggleButton.target = self
@@ -172,12 +172,12 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
 
         // Generation Transition Effect Selector
         let transitionLabel = NSTextField(labelWithString: "Transition:")
-        transitionLabel.frame = NSRect(x: 284, y: 95, width: 62, height: 18)
+        transitionLabel.frame = NSRect(x: 280, y: 117, width: 68, height: 18)
         transitionLabel.font = NSFont.systemFont(ofSize: 11, weight: .medium)
         transitionLabel.textColor = .secondaryLabelColor
         contentView.addSubview(transitionLabel)
 
-        let transitionPopup = NSPopUpButton(frame: NSRect(x: 348, y: 90, width: 192, height: 26), pullsDown: false)
+        let transitionPopup = NSPopUpButton(frame: NSRect(x: 350, y: 112, width: 200, height: 26), pullsDown: false)
         for effect in TaskbarTransitionEffect.allCases {
             transitionPopup.addItem(withTitle: effect.displayName)
             transitionPopup.lastItem?.representedObject = effect.rawValue
@@ -197,31 +197,31 @@ public final class EraManagerWindow: NSWindow, NSTableViewDataSource, NSTableVie
         contentView.addSubview(transitionPopup)
 
         // Bottom section: System Integrations & Helpers
-        let helperBox = NSBox(frame: NSRect(x: 20, y: 12, width: 520, height: 74))
+        let helperBox = NSBox(frame: NSRect(x: 20, y: 12, width: 530, height: 90))
         helperBox.title = "macOS Integration & Dock Helper"
 
-        let hideDockBtn = NSButton(frame: NSRect(x: 12, y: 14, width: 150, height: 26))
+        let hideDockBtn = NSButton(frame: NSRect(x: 12, y: 12, width: 156, height: 26))
         hideDockBtn.title = "Auto-Hide macOS Dock"
         hideDockBtn.bezelStyle = .rounded
         hideDockBtn.target = self
         hideDockBtn.action = #selector(hideDockClicked)
         helperBox.contentView?.addSubview(hideDockBtn)
 
-        let restoreDockBtn = NSButton(frame: NSRect(x: 168, y: 14, width: 150, height: 26))
+        let restoreDockBtn = NSButton(frame: NSRect(x: 174, y: 12, width: 156, height: 26))
         restoreDockBtn.title = "Restore macOS Dock"
         restoreDockBtn.bezelStyle = .rounded
         restoreDockBtn.target = self
         restoreDockBtn.action = #selector(restoreDockClicked)
         helperBox.contentView?.addSubview(restoreDockBtn)
 
-        let a11yBtn = NSButton(frame: NSRect(x: 324, y: 14, width: 180, height: 26))
+        let a11yBtn = NSButton(frame: NSRect(x: 336, y: 12, width: 166, height: 26))
         a11yBtn.title = "Accessibility Settings..."
         a11yBtn.bezelStyle = .rounded
         a11yBtn.target = self
         a11yBtn.action = #selector(a11yClicked)
         helperBox.contentView?.addSubview(a11yBtn)
 
-        accessibilityStatusLabel.frame = NSRect(x: 12, y: 44, width: 490, height: 16)
+        accessibilityStatusLabel.frame = NSRect(x: 14, y: 46, width: 502, height: 16)
         accessibilityStatusLabel.font = NSFont.systemFont(ofSize: 10)
         helperBox.contentView?.addSubview(accessibilityStatusLabel)
 
